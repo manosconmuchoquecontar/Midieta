@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Mi Dieta · Menú semanal</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#E2856B">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Mi Dieta">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FBF3EC; --ink:#4A3B34; --accent:#E2856B; --olive:#86AC72;
+  --line:#F0E3D6; --soft:#F6EAD9; --muted:#B7A695; --muted2:#8C7A6A;
+  --card:#FFFFFF;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+.serif{font-family:'Fraunces',serif;}
+.mono{font-family:'JetBrains Mono',monospace;}
+.wrap{max-width:520px;margin:0 auto;padding-bottom:90px;}
+header{position:sticky;top:0;z-index:15;background:var(--bg);border-bottom:1px solid var(--line);padding:22px 18px 14px;}
+.eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:4px;}
+h1{font-size:24px;font-weight:600;margin:0;}
+main{padding:16px;}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px;}
+.pill-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;margin-bottom:2px;}
+.pill{flex-shrink:0;padding:7px 14px;border-radius:999px;font-size:13px;font-weight:600;border:1px solid var(--line);background:#fff;color:var(--muted2);cursor:pointer;white-space:nowrap;}
+.pill.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.pill.olive.active{background:var(--olive);border-color:var(--olive);}
+
+label.field-label{display:block;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+input[type=text],input[type=number],select,textarea{
+  width:100%;padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:#fff;
+  font-family:'Inter',sans-serif;font-size:14px;color:var(--ink);
+}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+
+/* Macro rings */
+.rings-row{display:flex;justify-content:space-between;gap:6px;}
+.ring-box{display:flex;flex-direction:column;align-items:center;}
+.ring-val{font-size:11px;font-weight:700;color:var(--muted2);margin-top:-38px;}
+.ring-label{font-size:10px;color:var(--muted);margin-top:32px;}
+
+/* Buttons */
+.btn{border:none;border-radius:12px;padding:11px 16px;font-weight:600;font-size:14px;cursor:pointer;font-family:'Inter',sans-serif;}
+.btn-accent{background:var(--accent);color:#fff;}
+.btn-olive{background:var(--olive);color:#fff;}
+.btn-ghost{background:#fff;border:1px solid var(--line);color:var(--muted2);}
+.btn-row{display:flex;gap:8px;}
+.btn-row .btn{flex:1;}
+.icon-btn{width:30px;height:30px;border-radius:50%;background:var(--soft);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+
+/* Meal card in Dieta */
+.meal-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px;}
+.meal-title{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin:0 0 8px;}
+.portion-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px;}
+.portion-ctrl{display:flex;align-items:center;gap:8px;}
+.step-btn{width:26px;height:26px;border-radius:50%;background:var(--soft);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+
+/* Recipe card in Recetas */
+.recipe-card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:10px;}
+.recipe-top{display:flex;gap:12px;padding:12px;}
+.seal{width:60px;height:60px;border-radius:50%;border:2px solid var(--accent);background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(-3deg);flex-shrink:0;}
+.seal .kcal{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;color:var(--accent);line-height:1;}
+.seal .kcal-label{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);margin-top:2px;}
+.recipe-info{flex:1;min-width:0;}
+.recipe-name-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:6px;}
+.recipe-name{font-size:15px;margin:0;line-height:1.3;}
+.badge-npv{font-size:9px;font-weight:800;padding:2px 6px;border-radius:999px;background:var(--olive);color:#fff;}
+.recipe-meta{display:flex;justify-content:space-between;align-items:center;}
+.macros-line{display:flex;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted2);}
+.time-line{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);}
+.avoid-warning{font-size:11px;color:var(--accent);margin-top:6px;}
+.recipe-actions{display:flex;border-top:1px solid var(--line);}
+.recipe-actions button{flex:1;padding:9px 0;font-size:12px;font-weight:600;background:none;border:none;cursor:pointer;color:var(--muted2);font-family:'Inter',sans-serif;border-left:1px solid var(--line);}
+.recipe-actions button:first-child{border-left:none;}
+.recipe-actions button.danger{color:var(--accent);}
+.recipe-detail{padding:4px 16px 16px;border-top:1px solid var(--line);}
+.detail-label{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:10px 0 6px;font-family:'JetBrains Mono',monospace;}
+.ing-list,.step-list{margin:0;padding:0;list-style:none;font-size:14px;}
+.ing-list li{padding:2px 0;}
+.step-list li{display:flex;gap:8px;padding:4px 0;}
+.step-num{font-family:'JetBrains Mono',monospace;color:var(--accent);flex-shrink:0;}
+
+/* Shopping list */
+.shop-cat-title{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-family:'JetBrains Mono',monospace;}
+.shop-item{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--line);border-radius:12px;margin-bottom:6px;cursor:pointer;background:#fff;}
+.shop-item.checked{background:var(--soft);}
+.shop-check{width:20px;height:20px;border-radius:50%;border:2px solid var(--muted);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;}
+.shop-item.checked .shop-check{background:var(--olive);border-color:var(--olive);}
+.shop-name{flex:1;font-size:14px;}
+.shop-item.checked .shop-name{color:var(--muted);text-decoration:line-through;}
+.shop-qty{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted2);}
+.shop-item.checked .shop-qty{color:var(--muted);text-decoration:line-through;}
+
+/* Nav */
+nav.tabbar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:6px 4px;z-index:20;}
+nav.tabbar button{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;border-radius:12px;color:var(--muted);font-family:'Inter',sans-serif;cursor:pointer;}
+nav.tabbar button.active{color:var(--accent);}
+nav.tabbar svg{width:20px;height:20px;}
+nav.tabbar .tab-label{font-size:10px;font-weight:700;}
+
+/* FAB */
+.fab{position:fixed;bottom:78px;right:18px;width:54px;height:54px;border-radius:50%;background:var(--accent);color:#fff;border:none;box-shadow:0 6px 18px rgba(226,133,107,.4);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:19;font-size:26px;}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(74,59,52,.45);display:none;align-items:flex-end;justify-content:center;z-index:50;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg);width:100%;max-width:520px;border-radius:24px 24px 0 0;max-height:90vh;display:flex;flex-direction:column;}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--line);}
+.modal-header h3{margin:0;font-size:18px;}
+.modal-body{overflow-y:auto;padding:14px 18px 24px;}
+.new-ing-box{margin-top:8px;padding:12px;background:var(--soft);border-radius:12px;display:flex;flex-direction:column;gap:8px;}
+.ing-row{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;}
+.ing-row select{flex:1;min-width:0;}
+.ing-row input{width:64px;flex-shrink:0;}
+.step-row{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start;}
+.step-row textarea{flex:1;resize:none;min-height:38px;}
+.checkbox-row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted2);}
+.empty-state{text-align:center;padding:50px 20px;color:var(--muted);}
+.photo-upload-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.photo-slot{position:relative;}
+.photo-slot label.photo-label{display:block;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;text-align:center;}
+.photo-drop{border:2px dashed var(--line);border-radius:14px;background:var(--soft);height:110px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;color:var(--muted2);font-size:12px;cursor:pointer;overflow:hidden;position:relative;}
+.photo-drop img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:12px;}
+.photo-drop input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.photo-remove-x{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;background:rgba(74,59,52,.65);color:#fff;border:none;font-size:12px;z-index:2;}
+.diary-thumbs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
+.diary-thumbs img{width:100%;height:90px;object-fit:cover;border-radius:10px;border:1px solid var(--line);background:var(--soft);}
+.diary-thumbs .thumb-label{font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);text-align:center;margin-top:3px;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header style="display:flex;align-items:center;justify-content:space-between;">
+    <div>
+      <div class="eyebrow">👩‍🍳 Mi recetario</div>
+      <h1 class="serif">Menú semanal</h1>
+    </div>
+    <button class="icon-btn" id="open-backup" title="Copia de seguridad" style="width:36px;height:36px;">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+    </button>
+  </header>
+  <main id="main"></main>
+</div>
+
+<button class="fab" id="fab-new-recipe" style="display:none;">+</button>
+
+<nav class="tabbar">
+  <button data-tab="dieta" class="active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+    <span class="tab-label">Dieta</span>
+  </button>
+  <button data-tab="recetas">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"></path><line x1="6" y1="17" x2="18" y2="17"></line></svg>
+    <span class="tab-label">Recetas</span>
+  </button>
+  <button data-tab="lista">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 2-1.58l1.65-7.43H5.12"></path></svg>
+    <span class="tab-label">Lista</span>
+  </button>
+  <button data-tab="registro">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+    <span class="tab-label">Registro</span>
+  </button>
+</nav>
+
+<div class="modal-overlay" id="backup-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="serif">Copia de seguridad</h3>
+      <button class="icon-btn" id="backup-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--muted2);margin-bottom:14px;">Guarda un archivo con todos tus datos (recetas, plan semanal, objetivos, registro de Mounjaro, notas del diario de comidas) para no perderlos si cambias de móvil o borras el navegador. Las <b>fotos</b> del diario no se incluyen en esta copia — se quedan guardadas solo en este navegador.</p>
+      <button class="btn btn-accent" id="backup-export" style="width:100%;margin-bottom:10px;">⬇️ Descargar copia de seguridad</button>
+      <div class="card" style="margin-top:14px;">
+        <label class="field-label">Restaurar desde un archivo</label>
+        <input type="file" id="backup-import-file" accept="application/json" style="margin-top:8px;">
+        <p id="backup-import-status" style="font-size:12px;color:var(--muted2);margin-top:8px;"></p>
+      </div>
+      <p style="font-size:11px;color:var(--accent);margin-top:14px;">⚠️ Restaurar una copia sustituye todos los datos actuales de la app.</p>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="editor-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="serif" id="editor-title">Nueva receta</h3>
+      <button class="icon-btn" id="editor-close">✕</button>
+    </div>
+    <div class="modal-body" id="editor-body"></div>
+  </div>
+</div>
+
+
+<script>
+// =============================================================================
+// DATOS BASE
+// =============================================================================
+const CATEGORIES = ["Carnes y pescados","Huevos y lácteos","Cereales y pan","Verduras y fruta","Despensa","Otros"];
+
+const NUTR_SEED = [
+  {id:"pechuga_pollo",name:"Pechuga de pollo",category:"Carnes y pescados",unit:"g",p:23,c:0,g:2,k:110},
+  {id:"ternera",name:"Ternera magra",category:"Carnes y pescados",unit:"g",p:26,c:0,g:8,k:175},
+  {id:"lomo_cerdo",name:"Lomo de cerdo",category:"Carnes y pescados",unit:"g",p:22,c:0,g:5,k:143},
+  {id:"merluza",name:"Merluza",category:"Carnes y pescados",unit:"g",p:17,c:0,g:1,k:80},
+  {id:"rape",name:"Rape",category:"Carnes y pescados",unit:"g",p:15,c:0,g:1,k:70},
+  {id:"gambas",name:"Gambas",category:"Carnes y pescados",unit:"g",p:20,c:0,g:1,k:90},
+  {id:"jamon_york",name:"Jamón de York / cocido",category:"Carnes y pescados",unit:"g",p:18,c:1,g:3,k:100},
+  {id:"salmon",name:"Salmón",category:"Carnes y pescados",unit:"g",p:20,c:0,g:13,k:208,avoid:true,avoidReason:"No recomendado por tu nutricionista"},
+  {id:"pechuga_pavo",name:"Pechuga de pavo 90%",category:"Carnes y pescados",unit:"g",p:24,c:0,g:1,k:115},
+  {id:"jamon_serrano",name:"Jamón serrano",category:"Carnes y pescados",unit:"g",p:30,c:0,g:8,k:195},
+  {id:"atun_lata",name:"Atún en lata (natural / aove escurrido)",category:"Carnes y pescados",unit:"g",p:26,c:0,g:2,k:125},
+  {id:"langostino",name:"Langostino pelado",category:"Carnes y pescados",unit:"g",p:18,c:1,g:1,k:85},
+  {id:"solomillo",name:"Solomillo",category:"Carnes y pescados",unit:"g",p:21,c:0,g:6,k:140},
+  {id:"carne_kebap",name:"Carne kebap",category:"Carnes y pescados",unit:"g",p:18,c:2,g:15,k:220},
+  {id:"burger_pollo",name:"Burger de pollo",category:"Carnes y pescados",unit:"g",p:18,c:3,g:12,k:190},
+  {id:"huevo",name:"Huevo",category:"Huevos y lácteos",unit:"ud",gramsPerUnit:60,p:13,c:1,g:11,k:155},
+  {id:"queso_fresco",name:"Queso fresco bajo en grasa",category:"Huevos y lácteos",unit:"g",p:12,c:3.5,g:4,k:98,avoid:true,avoidReason:"FODMAP (quesos frescos)"},
+  {id:"yogur",name:"Yogur natural",category:"Huevos y lácteos",unit:"g",p:4,c:5,g:3,k:61,avoid:true,avoidReason:"FODMAP (yogures con lactosa)"},
+  {id:"leche",name:"Leche semidesnatada",category:"Huevos y lácteos",unit:"ml",p:3.2,c:4.8,g:1.6,k:46,avoid:true,avoidReason:"FODMAP (con lactosa)"},
+  {id:"mozzarella",name:"Mozzarella",category:"Huevos y lácteos",unit:"g",p:22,c:2.2,g:17,k:250},
+  {id:"leche_sin_lactosa",name:"Leche desnatada sin lactosa",category:"Huevos y lácteos",unit:"ml",p:3.4,c:4.8,g:0.3,k:35},
+  {id:"bebida_vegetal",name:"Bebida vegetal 0% azúcares",category:"Huevos y lácteos",unit:"ml",p:0.5,c:2,g:1,k:24},
+  {id:"yogur_griego_light",name:"Yogur griego light",category:"Huevos y lácteos",unit:"g",p:7,c:4,g:2,k:70},
+  {id:"yogur_sin_lactosa",name:"Yogur natural sin lactosa",category:"Huevos y lácteos",unit:"g",p:4,c:4,g:3,k:58},
+  {id:"queso_curado",name:"Queso curado",category:"Huevos y lácteos",unit:"g",p:26,c:0,g:30,k:380},
+  {id:"queso_semi",name:"Queso semicurado",category:"Huevos y lácteos",unit:"g",p:24,c:0.5,g:24,k:310},
+  {id:"queso_sin_lactosa",name:"Queso sin lactosa (loncha)",category:"Huevos y lácteos",unit:"g",p:23,c:1,g:22,k:290},
+  {id:"queso_cheddar",name:"Queso cheddar (loncha)",category:"Huevos y lácteos",unit:"g",p:25,c:1.3,g:33,k:400},
+  {id:"queso_crema_light",name:"Queso crema light",category:"Huevos y lácteos",unit:"g",p:8,c:4,g:10,k:140},
+  {id:"leche_evaporada",name:"Leche evaporada",category:"Huevos y lácteos",unit:"ml",p:6.8,c:10,g:7.6,k:134},
+  {id:"queso_feta",name:"Queso feta",category:"Huevos y lácteos",unit:"g",p:14,c:4,g:21,k:264,avoid:true,avoidReason:"No recomendado por tu nutricionista"},
+  {id:"arroz",name:"Arroz",category:"Cereales y pan",unit:"g",p:7,c:78,g:1,k:360},
+  {id:"pasta",name:"Pasta",category:"Cereales y pan",unit:"g",p:13,c:70,g:2,k:360},
+  {id:"patata",name:"Patata",category:"Cereales y pan",unit:"g",p:2,c:17,g:0,k:80},
+  {id:"boniato",name:"Boniato",category:"Cereales y pan",unit:"g",p:1.6,c:20,g:0.1,k:86},
+  {id:"pan",name:"Pan",category:"Cereales y pan",unit:"g",p:8,c:49,g:3,k:270},
+  {id:"corn_flakes",name:"Corn flakes",category:"Cereales y pan",unit:"g",p:7,c:84,g:1,k:378},
+  {id:"nesquik_0",name:"Nesquik 0% azúcares",category:"Cereales y pan",unit:"g",p:6,c:78,g:3,k:380},
+  {id:"avena",name:"Avena",category:"Cereales y pan",unit:"g",p:13,c:60,g:7,k:380},
+  {id:"pan_trigo_sarraceno",name:"Pan de trigo sarraceno",category:"Cereales y pan",unit:"g",p:9,c:48,g:2,k:260},
+  {id:"pan_molde_integral",name:"Pan de molde integral",category:"Cereales y pan",unit:"g",p:9,c:43,g:4,k:250},
+  {id:"pan_espelta",name:"Pan de espelta integral",category:"Cereales y pan",unit:"g",p:10,c:47,g:2,k:260},
+  {id:"pan_pita",name:"Pan de pita",category:"Cereales y pan",unit:"ud",gramsPerUnit:80,p:9,c:55,g:2,k:275},
+  {id:"pan_brioche",name:"Pan brioche para burger",category:"Cereales y pan",unit:"ud",gramsPerUnit:50,p:9,c:50,g:9,k:330},
+  {id:"tortilla_maiz",name:"Tortilla de maíz",category:"Cereales y pan",unit:"ud",gramsPerUnit:30,p:7,c:45,g:3,k:218},
+  {id:"arroz_basmati",name:"Arroz basmati",category:"Cereales y pan",unit:"g",p:7.5,c:78,g:0.5,k:356},
+  {id:"noquis",name:"Ñoquis",category:"Cereales y pan",unit:"g",p:3,c:20,g:1,k:110},
+  {id:"kikos",name:"Kikos (maíz tostado)",category:"Cereales y pan",unit:"g",p:9,c:65,g:14,k:440},
+  {id:"quinoa",name:"Quinoa cocida",category:"Cereales y pan",unit:"g",p:4.4,c:21.3,g:1.9,k:120,avoid:true,avoidReason:"No recomendado por tu nutricionista"},
+  {id:"tomate",name:"Tomate",category:"Verduras y fruta",unit:"g",p:0.9,c:3.9,g:0.2,k:18},
+  {id:"pimiento",name:"Pimiento",category:"Verduras y fruta",unit:"g",p:1,c:6,g:0.3,k:31},
+  {id:"calabacin",name:"Calabacín",category:"Verduras y fruta",unit:"g",p:1.2,c:3.1,g:0.3,k:17},
+  {id:"berenjena",name:"Berenjena",category:"Verduras y fruta",unit:"g",p:1,c:6,g:0.2,k:25},
+  {id:"zanahoria",name:"Zanahoria",category:"Verduras y fruta",unit:"g",p:0.9,c:10,g:0.2,k:41},
+  {id:"calabaza",name:"Calabaza",category:"Verduras y fruta",unit:"g",p:1,c:7,g:0.1,k:26},
+  {id:"cebolla",name:"Cebolla",category:"Verduras y fruta",unit:"g",p:1.1,c:9,g:0.1,k:40,avoid:true,avoidReason:"FODMAP"},
+  {id:"limon",name:"Limón",category:"Verduras y fruta",unit:"g",p:1,c:9,g:0.3,k:29},
+  {id:"arandanos",name:"Arándanos",category:"Verduras y fruta",unit:"g",p:0.7,c:14,g:0.3,k:57},
+  {id:"platano",name:"Plátano",category:"Verduras y fruta",unit:"g",p:1.1,c:23,g:0.3,k:89},
+  {id:"manzana",name:"Manzana",category:"Verduras y fruta",unit:"g",p:0.3,c:14,g:0.2,k:52,avoid:true,avoidReason:"FODMAP"},
+  {id:"pepino",name:"Pepino",category:"Verduras y fruta",unit:"g",p:0.65,c:3.6,g:0.1,k:15},
+  {id:"mandarina",name:"Mandarina",category:"Verduras y fruta",unit:"ud",gramsPerUnit:80,p:0.8,c:12,g:0.2,k:53},
+  {id:"fresas",name:"Fresas",category:"Verduras y fruta",unit:"g",p:0.8,c:7.7,g:0.3,k:32},
+  {id:"kiwi",name:"Kiwi",category:"Verduras y fruta",unit:"ud",gramsPerUnit:75,p:1.1,c:15,g:0.5,k:61},
+  {id:"melon_amarillo",name:"Melón amarillo",category:"Verduras y fruta",unit:"g",p:0.8,c:8,g:0.2,k:34},
+  {id:"sandia",name:"Sandía (extra permitido)",category:"Verduras y fruta",unit:"g",p:0.6,c:8,g:0.2,k:30},
+  {id:"aguacate",name:"Aguacate",category:"Verduras y fruta",unit:"g",p:2,c:8.5,g:15,k:160},
+  {id:"guacamole",name:"Guacamole",category:"Verduras y fruta",unit:"g",p:2,c:5,g:14,k:150},
+  {id:"pisto",name:"Pisto (verduras salteadas)",category:"Verduras y fruta",unit:"g",p:1.5,c:6,g:5,k:70},
+  {id:"frutos_secos",name:"Frutos secos crudos/tostados (mix)",category:"Despensa",unit:"g",p:20,c:18,g:50,k:600},
+  {id:"aceite_oliva",name:"Aceite de oliva",category:"Despensa",unit:"ml",p:0,c:0,g:100,k:884},
+  {id:"vinagre",name:"Vinagre",category:"Despensa",unit:"ml",p:0,c:0.4,g:0,k:19},
+  {id:"salsa_teriyaki",name:"Salsa teriyaki/soja",category:"Despensa",unit:"g",p:2,c:20,g:0,k:90},
+  {id:"chocolate_puro",name:"Chocolate puro",category:"Despensa",unit:"g",p:7.8,c:46,g:31,k:546,avoid:true,avoidReason:"No recomendado por tu nutricionista"},
+  {id:"salsa_pesto",name:"Salsa pesto",category:"Despensa",unit:"g",p:4,c:4,g:38,k:380},
+  {id:"salsa_ligera",name:"Salsa ligeresa (mayonesa light)",category:"Despensa",unit:"g",p:1,c:6,g:15,k:160},
+  {id:"leche_coco",name:"Leche de coco",category:"Despensa",unit:"ml",p:2,c:3,g:21,k:200},
+  {id:"grana_padano",name:"Grana padano / parmesano en polvo",category:"Huevos y lácteos",unit:"g",p:35,c:0,g:29,k:392},
+  {id:"noodles_arroz",name:"Noodles de arroz",category:"Cereales y pan",unit:"g",p:2,c:25,g:0.2,k:109},
+  {id:"contramuslo_pollo",name:"Contramuslo de pollo deshuesado sin piel",category:"Carnes y pescados",unit:"g",p:19,c:0,g:8,k:150},
+];
+
+const RECETAS_SEED = [
+  {id:"pollo-horno-patata",name:"Pollo al horno con patatas y pimientos",mealType:"comida",tiempo:30,
+    ingredients:[{ingId:"pechuga_pollo",amount:200},{ingId:"patata",amount:220},{ingId:"pimiento",amount:100},{ingId:"aceite_oliva",amount:12}],
+    pasos:["Precalienta el horno a 200°C.","Corta la patata y el pimiento en trozos y mézclalos con la mitad del aceite.","Coloca el pollo encima, riega con el resto del aceite y sazona.","Hornea 25-30 min hasta que el pollo esté hecho y las patatas doradas."]},
+  {id:"merluza-boniato",name:"Merluza a la plancha con boniato asado",mealType:"comida",tiempo:25,
+    ingredients:[{ingId:"merluza",amount:230},{ingId:"boniato",amount:200},{ingId:"aceite_oliva",amount:10},{ingId:"limon",amount:10}],
+    pasos:["Corta el boniato en rodajas, riega con aceite y hornea 20 min a 200°C.","Marca la merluza en la plancha 2-3 min por cada lado.","Sirve con un chorrito de limón."]},
+  {id:"pasta-ternera-tomate",name:"Pasta con ternera picada y tomate",mealType:"comida",tiempo:25,
+    ingredients:[{ingId:"pasta",amount:85},{ingId:"ternera",amount:170},{ingId:"tomate",amount:150},{ingId:"cebolla",amount:40},{ingId:"aceite_oliva",amount:10}],
+    pasos:["Cuece la pasta según el paquete.","Sofríe la cebolla, añade la ternera picada y dora.","Incorpora el tomate troceado y cocina 10 min.","Mezcla con la pasta escurrida."]},
+  {id:"lomo-arroz-calabaza",name:"Lomo de cerdo con arroz y calabaza asada",mealType:"comida",tiempo:30,
+    ingredients:[{ingId:"lomo_cerdo",amount:190},{ingId:"arroz",amount:70},{ingId:"calabaza",amount:150},{ingId:"aceite_oliva",amount:10}],
+    pasos:["Hornea la calabaza en dados con aceite 25 min a 200°C.","Cuece el arroz.","Plancha el lomo 3-4 min por cada lado."]},
+  {id:"gambas-arroz-verduras",name:"Gambas salteadas con arroz y verduras",mealType:"comida",tiempo:25,
+    ingredients:[{ingId:"gambas",amount:200},{ingId:"arroz",amount:70},{ingId:"pimiento",amount:80},{ingId:"calabacin",amount:80},{ingId:"aceite_oliva",amount:10}],
+    pasos:["Cuece el arroz aparte.","Saltea el pimiento y calabacín 5 min, añade las gambas 2-3 min más.","Mezcla todo junto."]},
+  {id:"rape-patata-zanahoria",name:"Rape al horno con patata y zanahoria",mealType:"comida",tiempo:30,
+    ingredients:[{ingId:"rape",amount:230},{ingId:"patata",amount:200},{ingId:"zanahoria",amount:100},{ingId:"aceite_oliva",amount:10}],
+    pasos:["Corta patata y zanahoria en rodajas finas, hornea 20 min a 200°C con aceite.","Añade el rape encima y hornea 10-12 min más."]},
+  {id:"pollo-pasta-tomate",name:"Pollo a la plancha con pasta y tomate",mealType:"comida",tiempo:20,
+    ingredients:[{ingId:"pechuga_pollo",amount:170},{ingId:"pasta",amount:75},{ingId:"tomate",amount:120},{ingId:"aceite_oliva",amount:8}],
+    pasos:["Cuece la pasta.","Plancha el pollo en filetes finos 3-4 min por lado.","Saltea el tomate troceado 5 min con aceite y mezcla con la pasta."]},
+  {id:"ternera-boniato-pimientos",name:"Ternera con boniato y pimientos asados",mealType:"comida",tiempo:30,
+    ingredients:[{ingId:"ternera",amount:180},{ingId:"boniato",amount:190},{ingId:"pimiento",amount:100},{ingId:"aceite_oliva",amount:10}],
+    pasos:["Hornea el boniato y pimiento en tiras 25 min a 200°C.","Plancha la ternera al punto que te guste."]},
+  {id:"brocheta-pollo-arroz",name:"Brocheta de pollo con arroz y calabacín",mealType:"comida",tiempo:25,
+    ingredients:[{ingId:"pechuga_pollo",amount:190},{ingId:"arroz",amount:65},{ingId:"calabacin",amount:100},{ingId:"aceite_oliva",amount:10}],
+    pasos:["Corta el pollo en dados, ensarta y plancha o gratina 10-12 min.","Cuece el arroz y saltea el calabacín en rodajas."]},
+  {id:"lomo-pure-zanahoria",name:"Lomo con puré de patata y zanahoria",mealType:"comida",tiempo:30,
+    ingredients:[{ingId:"lomo_cerdo",amount:180},{ingId:"patata",amount:220},{ingId:"zanahoria",amount:80},{ingId:"aceite_oliva",amount:10}],
+    pasos:["Cuece patata y zanahoria, tritura con un poco de aceite hasta cremoso.","Plancha el lomo 3-4 min por lado."]},
+  {id:"berenjenas-rellenas",name:"Berenjenas rellenas de ternera",mealType:"comida",tiempo:35,
+    ingredients:[{ingId:"berenjena",amount:200},{ingId:"ternera",amount:180},{ingId:"tomate",amount:80},{ingId:"queso_fresco",amount:50},{ingId:"aceite_oliva",amount:10}],
+    pasos:["Corta las berenjenas por la mitad, vacía y hornea 15 min a 200°C.","Sofríe la ternera con el tomate y la pulpa de berenjena.","Rellena, cubre con queso fresco y gratina 10 min."]},
+  {id:"pollo-calabaza-arroz",name:"Pollo con calabaza asada y arroz",mealType:"comida",tiempo:30,
+    ingredients:[{ingId:"pechuga_pollo",amount:190},{ingId:"calabaza",amount:150},{ingId:"arroz",amount:65},{ingId:"aceite_oliva",amount:10}],
+    pasos:["Hornea la calabaza en dados 25 min a 200°C con aceite.","Cuece el arroz.","Plancha el pollo 4 min por lado."]},
+  {id:"tortilla-calabacin",name:"Tortilla de calabacín y cebolla",mealType:"cena",tiempo:20,
+    ingredients:[{ingId:"huevo",amount:3},{ingId:"calabacin",amount:100},{ingId:"cebolla",amount:50},{ingId:"aceite_oliva",amount:10},{ingId:"pan",amount:40}],
+    pasos:["Pocha la cebolla y el calabacín en aceite a fuego medio 10 min.","Bate los huevos, mézclalos con la verdura y cuaja en la sartén por ambos lados.","Sirve con el pan."]},
+  {id:"huevos-pan-tomate",name:"Huevos revueltos con pan y tomate",mealType:"cena",tiempo:15,
+    ingredients:[{ingId:"huevo",amount:3},{ingId:"pan",amount:70},{ingId:"tomate",amount:80},{ingId:"aceite_oliva",amount:8}],
+    pasos:["Bate los huevos y cuaja a fuego bajo removiendo.","Tuesta el pan y sirve con tomate rallado por encima."]},
+  {id:"tortilla-patata",name:"Tortilla de patata ligera",mealType:"cena",tiempo:30,
+    ingredients:[{ingId:"huevo",amount:3},{ingId:"patata",amount:170},{ingId:"cebolla",amount:40},{ingId:"aceite_oliva",amount:10}],
+    pasos:["Cuece la patata y cebolla en láminas finas a fuego bajo con el aceite, sin dorar, 15 min.","Escurre, mezcla con el huevo batido y cuaja en sartén por ambos lados."]},
+  {id:"tostada-queso-tomate",name:"Tostada con queso fresco, tomate y huevo",mealType:"cena",tiempo:10,
+    ingredients:[{ingId:"pan",amount:80},{ingId:"queso_fresco",amount:130},{ingId:"tomate",amount:80},{ingId:"aceite_oliva",amount:6},{ingId:"huevo",amount:1}],
+    pasos:["Tuesta el pan.","Cubre con queso fresco y tomate en rodajas.","Acompaña con un huevo a la plancha o cocido.","Riega con un hilo de aceite."]},
+  {id:"merluza-arroz-pimientos",name:"Merluza con arroz y pimientos",mealType:"cena",tiempo:25,
+    ingredients:[{ingId:"merluza",amount:230},{ingId:"arroz",amount:65},{ingId:"pimiento",amount:100},{ingId:"aceite_oliva",amount:10}],
+    pasos:["Cuece el arroz.","Saltea el pimiento en tiras 8 min.","Plancha la merluza 2-3 min por lado."]},
+  {id:"gambas-pasta-calabacin",name:"Gambas con pasta y calabacín",mealType:"cena",tiempo:20,
+    ingredients:[{ingId:"gambas",amount:190},{ingId:"pasta",amount:75},{ingId:"calabacin",amount:100},{ingId:"aceite_oliva",amount:8}],
+    pasos:["Cuece la pasta.","Saltea el calabacín en dados 5 min, añade las gambas 2-3 min más.","Mezcla todo."]},
+  {id:"pollo-curry-arroz",name:"Pollo al curry suave con arroz",mealType:"cena",tiempo:25,
+    ingredients:[{ingId:"pechuga_pollo",amount:160},{ingId:"arroz",amount:55},{ingId:"cebolla",amount:50},{ingId:"aceite_oliva",amount:8}],
+    pasos:["Sofríe la cebolla, añade el pollo en dados y dora.","Espolvorea curry suave (no picante) y un poco de agua, cocina 10 min.","Sirve con arroz."]},
+  {id:"yogur-avena-arandanos",name:"Yogur con arándanos y tostada",mealType:"desayuno",tiempo:5,
+    ingredients:[{ingId:"yogur",amount:250},{ingId:"arandanos",amount:80},{ingId:"pan",amount:50},{ingId:"aceite_oliva",amount:6}],
+    pasos:["Sirve el yogur con los arándanos por encima.","Acompaña con la tostada con un hilo de aceite."]},
+  {id:"yogur-manzana-queso",name:"Yogur con manzana y queso fresco",mealType:"desayuno",tiempo:5,
+    ingredients:[{ingId:"yogur",amount:200},{ingId:"manzana",amount:120},{ingId:"queso_fresco",amount:110}],
+    pasos:["Mezcla el yogur con el queso fresco.","Añade la manzana troceada por encima."]},
+  {id:"tortilla-francesa-pan-tomate",name:"Tortilla francesa con pan y tomate",mealType:"desayuno",tiempo:10,
+    ingredients:[{ingId:"huevo",amount:2},{ingId:"pan",amount:60},{ingId:"tomate",amount:70},{ingId:"aceite_oliva",amount:6}],
+    pasos:["Bate el huevo y cuaja en sartén a fuego medio, doblando por la mitad.","Sirve con el pan tostado y el tomate."]},
+  {id:"queso-tomate-pan",name:"Queso fresco con tomate y pan",mealType:"desayuno",tiempo:5,
+    ingredients:[{ingId:"queso_fresco",amount:150},{ingId:"tomate",amount:80},{ingId:"pan",amount:60},{ingId:"aceite_oliva",amount:6}],
+    pasos:["Tuesta el pan.","Sirve con el queso fresco y el tomate, un hilo de aceite por encima."]},
+  {id:"tostada-jamon-tomate",name:"Tostada con jamón de York y tomate",mealType:"desayuno",tiempo:8,
+    ingredients:[{ingId:"pan",amount:80},{ingId:"jamon_york",amount:70},{ingId:"tomate",amount:80},{ingId:"aceite_oliva",amount:8}],
+    pasos:["Tuesta el pan.","Cubre con el jamón de York y el tomate en rodajas.","Riega con un hilo de aceite."]},
+  {id:"corn-flakes-leche-huevo",name:"Corn flakes con leche y huevo",mealType:"desayuno",tiempo:5,
+    ingredients:[{ingId:"corn_flakes",amount:45},{ingId:"leche",amount:220},{ingId:"huevo",amount:1}],
+    pasos:["Sirve los corn flakes con la leche.","Acompaña con un huevo cocido para sumar proteína."]},
+  {id:"tostada-mozzarella-jamon",name:"Tostada gratinada con mozzarella y jamón de York",mealType:"desayuno",tiempo:10,
+    ingredients:[{ingId:"pan",amount:70},{ingId:"mozzarella",amount:60},{ingId:"jamon_york",amount:40},{ingId:"aceite_oliva",amount:5}],
+    pasos:["Coloca el pan con la mozzarella y el jamón encima.","Gratina en el horno 5-7 min hasta que funda el queso.","Termina con un hilo de aceite."]},
+  {id:"gazpacho-calabacin",name:"Gazpacho de calabacín, pepino y manzana",mealType:"snack",tiempo:8,
+    ingredients:[{ingId:"calabacin",amount:150},{ingId:"pepino",amount:100},{ingId:"manzana",amount:80},{ingId:"vinagre",amount:10},{ingId:"aceite_oliva",amount:10}],
+    pasos:["Trocea el calabacín, el pepino y la manzana.","Tritura todo junto con el vinagre y el aceite hasta que quede fino.","Enfría en la nevera antes de servir.","Nota: ligero en proteína — mejor como entrante o snack, no como comida única."]},
+  {id:"snack-fruta-variada",name:"Snack · Kiwi y fresas",mealType:"snack",tiempo:3,
+    ingredients:[{ingId:"kiwi",amount:1},{ingId:"fresas",amount:100}],
+    pasos:["Pela el kiwi y trocea con las fresas.","Fruta de rápido acceso entre horas."]},
+  {id:"snack-mandarina-frutos-secos",name:"Snack · Mandarina con frutos secos",mealType:"snack",tiempo:2,
+    ingredients:[{ingId:"mandarina",amount:1},{ingId:"frutos_secos",amount:20}],
+    pasos:["Combina la mandarina con un puñado (20g) de frutos secos.","Ideal para llevar fuera de casa."]},
+  {id:"snack-yogur-arandanos",name:"Snack · Yogur sin lactosa con arándanos",mealType:"snack",tiempo:3,
+    ingredients:[{ingId:"yogur_sin_lactosa",amount:200},{ingId:"arandanos",amount:60}],
+    pasos:["Sirve el yogur sin lactosa con los arándanos por encima.","Apto para tu plan (yogur sin lactosa permitido)."]},
+  {id:"snack-platano-frutos-secos",name:"Snack · Plátano con frutos secos",mealType:"snack",tiempo:2,
+    ingredients:[{ingId:"platano",amount:100},{ingId:"frutos_secos",amount:15}],
+    pasos:["Plátano poco maduro troceado con un puñado pequeño (15g) de frutos secos."]},
+  {id:"snack-melon",name:"Snack · Melón amarillo",mealType:"snack",tiempo:2,
+    ingredients:[{ingId:"melon_amarillo",amount:200}],
+    pasos:["200g de melón amarillo bien frío.","Fruta permitida y muy refrescante como snack de media tarde."]},
+  {id:"snack-solo-frutos-secos",name:"Snack · Puñado de frutos secos",mealType:"snack",tiempo:1,
+    ingredients:[{ingId:"frutos_secos",amount:25}],
+    pasos:["Un puñado (25g) de frutos secos crudos o tostados, sin sal añadida si puedes.","Fácil de llevar y sacia bien entre horas."]},
+  {id:"npv-desayuno-1",name:"NPV · Tostada con jamón serrano",mealType:"desayuno",tiempo:5,nutricionista:true,
+    ingredients:[{ingId:"bebida_vegetal",amount:250},{ingId:"nesquik_0",amount:10},{ingId:"pan_trigo_sarraceno",amount:60},{ingId:"jamon_serrano",amount:30},{ingId:"aceite_oliva",amount:10},{ingId:"tomate",amount:40}],
+    pasos:["Opción 1 de tu plan NPV.","Sustituye libremente: bebida vegetal por leche sin lactosa; pan por masa madre o espelta integral; jamón serrano por 50g de pechuga de pavo 90%.","Tomate al gusto, opcional."]},
+  {id:"npv-desayuno-2",name:"NPV · Corn flakes con leche sin lactosa",mealType:"desayuno",tiempo:5,nutricionista:true,
+    ingredients:[{ingId:"leche_sin_lactosa",amount:300},{ingId:"nesquik_0",amount:10},{ingId:"corn_flakes",amount:40},{ingId:"mandarina",amount:1}],
+    pasos:["Opción 2 de tu plan NPV.","La mandarina te la puedes comer en otro momento del día si prefieres."]},
+  {id:"npv-comida-1",name:"NPV · Pollo con arroz basmati",mealType:"comida",tiempo:20,nutricionista:true,
+    ingredients:[{ingId:"pisto",amount:200},{ingId:"arroz_basmati",amount:50},{ingId:"pechuga_pollo",amount:150},{ingId:"aceite_oliva",amount:10}],
+    pasos:["Opción 1 de tu plan NPV: 200g verdura/ensalada + 50g arroz basmati (o pasta sin gluten, o 230g patata, o 110g ñoquis, o 60g pan trigo sarraceno) + 150g pollo/pavo/lomo/pescado blanco/gambas + 10ml aceite (o 80g pisto, 25g queso curado, o 50g guacamole)."]},
+  {id:"npv-comida-2",name:"NPV · Ensalada con patata, atún, jamón y huevo",mealType:"comida",tiempo:15,nutricionista:true,
+    ingredients:[{ingId:"tomate",amount:100},{ingId:"pepino",amount:60},{ingId:"zanahoria",amount:40},{ingId:"patata",amount:230},{ingId:"atun_lata",amount:80},{ingId:"jamon_york",amount:30},{ingId:"huevo",amount:1},{ingId:"aceite_oliva",amount:10}],
+    pasos:["Opción 2 de tu plan NPV.","Ensalada con lechuga, tomate, pepino, zanahoria rallada y un poco de maíz.","Patata cocida (o 50g arroz o pasta).","Atún, jamón cocido y huevo van todos juntos en esta opción."]},
+  {id:"npv-comida-3",name:"NPV · Ensalada de pasta con jamón y queso",mealType:"comida",tiempo:15,nutricionista:true,
+    ingredients:[{ingId:"pasta",amount:50},{ingId:"jamon_york",amount:60},{ingId:"queso_semi",amount:30},{ingId:"aceite_oliva",amount:10}],
+    pasos:["Opción 3 de tu plan NPV.","Alternativa a la salsa de aceite: 100g yogur griego light + 5ml aceite + especias."]},
+  {id:"npv-comida-4",name:"NPV · Ñoquis gratinados con jamón y huevo",mealType:"comida",tiempo:20,nutricionista:true,
+    ingredients:[{ingId:"tomate",amount:100},{ingId:"pepino",amount:100},{ingId:"noquis",amount:110},{ingId:"jamon_york",amount:60},{ingId:"huevo",amount:1},{ingId:"mozzarella",amount:25},{ingId:"leche_evaporada",amount:60}],
+    pasos:["Opción 4 de tu plan NPV.","Condimenta con pimienta, ajo en polvo, sal y nuez moscada."]},
+  {id:"npv-comida-5",name:"NPV · Ensalada de pasta con atún y mozzarella",mealType:"comida",tiempo:15,nutricionista:true,
+    ingredients:[{ingId:"pasta",amount:50},{ingId:"atun_lata",amount:80},{ingId:"mozzarella",amount:30},{ingId:"aceite_oliva",amount:10},{ingId:"tomate",amount:60}],
+    pasos:["Opción 5 de tu plan NPV.","Con lechuga, orégano y tomates cherry al gusto."]},
+  {id:"npv-cena-1",name:"NPV · Ensalada césar",mealType:"cena",tiempo:15,nutricionista:true,
+    ingredients:[{ingId:"tomate",amount:100},{ingId:"pepino",amount:100},{ingId:"pechuga_pollo",amount:140},{ingId:"mozzarella",amount:20},{ingId:"aceite_oliva",amount:10},{ingId:"pan_molde_integral",amount:30},{ingId:"yogur_griego_light",amount:100}],
+    pasos:["Opción 1 de tu plan NPV.","Pan tostado en picatostes.","Salsa: yogur griego light + ajo en polvo + sal + un poco de mostaza + orégano."]},
+  {id:"npv-cena-2",name:"NPV · Pan de pita con kebap",mealType:"cena",tiempo:10,nutricionista:true,
+    ingredients:[{ingId:"pan_pita",amount:1},{ingId:"carne_kebap",amount:120},{ingId:"mozzarella",amount:25},{ingId:"yogur_griego_light",amount:15}],
+    pasos:["Alternativa de cena de tu plan NPV.","El pan de pita lleva gluten — comprueba cómo te sienta."]},
+  {id:"npv-cena-3",name:"NPV · Tacos de pollo",mealType:"cena",tiempo:12,nutricionista:true,
+    ingredients:[{ingId:"tortilla_maiz",amount:3},{ingId:"pechuga_pollo",amount:150},{ingId:"mozzarella",amount:30},{ingId:"tomate",amount:40}],
+    pasos:["Alternativa de cena de tu plan NPV (tortillas de maíz tipo fajita).","Puedes sustituir el pollo por 100g de picada de pollo, 80g de ternera picada o 130g de solomillo.","Salsa de tomate opcional."]},
+  {id:"npv-cena-4",name:"NPV · Burger de pollo",mealType:"cena",tiempo:12,nutricionista:true,
+    ingredients:[{ingId:"pan_brioche",amount:1},{ingId:"burger_pollo",amount:90},{ingId:"queso_cheddar",amount:20}],
+    pasos:["Alternativa de cena de tu plan NPV.","Añade la salsa que más te guste, 15g aprox."]},
+
+  {id:"npv-comida-6",name:"NPV · Pollo con pasta al pesto",mealType:"comida",tiempo:15,nutricionista:true,
+    ingredients:[{ingId:"pasta",amount:50},{ingId:"pechuga_pollo",amount:140},{ingId:"salsa_pesto",amount:15},{ingId:"grana_padano",amount:15}],
+    pasos:["Revisión de diciembre de tu plan NPV.","También vale con cinta de lomo en vez de pollo."]},
+  {id:"npv-comida-7",name:"NPV · Ñoquis con carne picada y mozzarella",mealType:"comida",tiempo:15,nutricionista:true,
+    ingredients:[{ingId:"noquis",amount:110},{ingId:"ternera",amount:80},{ingId:"mozzarella",amount:25},{ingId:"tomate",amount:60}],
+    pasos:["Revisión de diciembre de tu plan NPV.","Salsa de tomate y albahaca (tipo Mercadona).","También vale con 110g de carne picada de pollo en vez de ternera."]},
+  {id:"npv-cena-5",name:"NPV · Ñoquis con pollo y queso crema",mealType:"cena",tiempo:15,nutricionista:true,
+    ingredients:[{ingId:"noquis",amount:110},{ingId:"pechuga_pollo",amount:140},{ingId:"queso_crema_light",amount:30},{ingId:"tomate",amount:60},{ingId:"grana_padano",amount:15}],
+    pasos:["Revisión de diciembre de tu plan NPV.","Salsa de tomate con el queso crema sin lactosa y un poco de grana padano por encima."]},
+  {id:"npv-comida-8",name:"NPV · Ternera filete con noodles y teriyaki",mealType:"comida",tiempo:15,nutricionista:true,
+    ingredients:[{ingId:"calabacin",amount:100},{ingId:"zanahoria",amount:100},{ingId:"noodles_arroz",amount:50},{ingId:"ternera",amount:150},{ingId:"aceite_oliva",amount:5},{ingId:"salsa_teriyaki",amount:15}],
+    pasos:["Revisión de marzo de tu plan NPV."]},
+  {id:"npv-comida-9",name:"NPV · Pavo con arroz y huevo",mealType:"comida",tiempo:15,nutricionista:true,
+    ingredients:[{ingId:"tomate",amount:100},{ingId:"pepino",amount:100},{ingId:"arroz",amount:50},{ingId:"pechuga_pavo",amount:50},{ingId:"huevo",amount:1},{ingId:"queso_semi",amount:30},{ingId:"guacamole",amount:40}],
+    pasos:["Revisión de marzo de tu plan NPV.","El huevo puede ir en tortilla o cocido.","También vale con 5ml de aceite de oliva en vez de guacamole."]},
+  {id:"npv-comida-10",name:"NPV · Bowl de pollo picado con pasta",mealType:"comida",tiempo:15,nutricionista:true,
+    ingredients:[{ingId:"tomate",amount:100},{ingId:"pepino",amount:100},{ingId:"pasta",amount:50},{ingId:"pechuga_pollo",amount:120},{ingId:"mozzarella",amount:25},{ingId:"guacamole",amount:40}],
+    pasos:["Revisión de marzo de tu plan NPV (\"modo bowl\").","Vale también con 110g de ñoquis o noodles de arroz en vez de pasta."]},
+  {id:"npv-comida-11",name:"NPV · Solomillo con patata asada",mealType:"comida",tiempo:20,nutricionista:true,
+    ingredients:[{ingId:"tomate",amount:100},{ingId:"pepino",amount:100},{ingId:"patata",amount:230},{ingId:"solomillo",amount:150},{ingId:"aceite_oliva",amount:5}],
+    pasos:["Revisión de mayo de tu plan NPV.","Vale con solomillo de cerdo o de ternera indistintamente."]},
+  {id:"npv-comida-12",name:"NPV · Cinta de lomo con ñoquis y huevo",mealType:"comida",tiempo:15,nutricionista:true,
+    ingredients:[{ingId:"pimiento",amount:100},{ingId:"calabacin",amount:100},{ingId:"noquis",amount:50},{ingId:"lomo_cerdo",amount:130},{ingId:"huevo",amount:1},{ingId:"queso_semi",amount:20}],
+    pasos:["Revisión de mayo de tu plan NPV (cinta de lomo adobada).","También vale con 50g de arroz en vez de ñoquis, y 60g de pisto en vez de huevo+queso."]},
+  {id:"npv-comida-13",name:"NPV · Atún con noodles y huevo",mealType:"comida",tiempo:15,nutricionista:true,
+    ingredients:[{ingId:"tomate",amount:100},{ingId:"pepino",amount:100},{ingId:"noodles_arroz",amount:50},{ingId:"atun_lata",amount:80},{ingId:"huevo",amount:1}],
+    pasos:["Revisión de mayo de tu plan NPV.","Salsa de tomate opcional."]},
+  {id:"npv-comida-14",name:"NPV · Contramuslo de pollo con noodles y leche de coco",mealType:"comida",tiempo:15,nutricionista:true,
+    ingredients:[{ingId:"calabacin",amount:100},{ingId:"zanahoria",amount:100},{ingId:"noodles_arroz",amount:50},{ingId:"contramuslo_pollo",amount:140},{ingId:"aceite_oliva",amount:5},{ingId:"leche_coco",amount:60},{ingId:"salsa_teriyaki",amount:15}],
+    pasos:["Revisión de febrero de tu plan NPV."]},
+  {id:"npv-comida-15",name:"NPV · Boniato con ternera picada en bowl",mealType:"comida",tiempo:15,nutricionista:true,
+    ingredients:[{ingId:"tomate",amount:100},{ingId:"pepino",amount:100},{ingId:"boniato",amount:200},{ingId:"ternera",amount:100},{ingId:"queso_semi",amount:30}],
+    pasos:["Revisión de febrero de tu plan NPV.","Todo en un bowl.","Sustituido el queso feta original por queso semicurado — tu nutricionista quitó el feta de la lista permitida en revisiones posteriores.","También vale con 120g de pollo picado en vez de ternera."]},
+  {id:"npv-cena-6",name:"NPV · Ñoquis con jamón serrano y queso crema",mealType:"cena",tiempo:15,nutricionista:true,
+    ingredients:[{ingId:"tomate",amount:100},{ingId:"pepino",amount:100},{ingId:"noquis",amount:110},{ingId:"jamon_serrano",amount:40},{ingId:"huevo",amount:1},{ingId:"queso_crema_light",amount:30},{ingId:"grana_padano",amount:15}],
+    pasos:["Revisión de febrero de tu plan NPV.","Bate el huevo con el queso crema y viértelo en la sartén con los ñoquis sin dejar de remover."]},
+];
+
+const DAYS = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
+const MEAL_TYPES = [
+  {id:"desayuno",label:"Desayuno",share:0.25,icon:"☀️"},
+  {id:"comida",label:"Comida",share:0.35,icon:"🍽️"},
+  {id:"cena",label:"Cena",share:0.30,icon:"🌙"},
+  {id:"snack",label:"Snack",share:0.10,icon:"🥒"},
+];
+const DEFAULT_TARGETS = {kcal:1650,protein:130,carbs:160,fat:55};
+const SEED_WEEKPLAN = {
+  Lunes:{desayuno:{recipeId:"tostada-jamon-tomate",portion:1},comida:{recipeId:"pollo-horno-patata",portion:1},cena:{recipeId:"tortilla-calabacin",portion:1}},
+  Martes:{desayuno:{recipeId:"yogur-avena-arandanos",portion:1},comida:{recipeId:"pasta-ternera-tomate",portion:1},cena:{recipeId:"merluza-arroz-pimientos",portion:1}},
+  Miércoles:{desayuno:{recipeId:"corn-flakes-leche-huevo",portion:1},comida:{recipeId:"lomo-arroz-calabaza",portion:1},cena:{recipeId:"huevos-pan-tomate",portion:1}},
+  Jueves:{desayuno:{recipeId:"queso-tomate-pan",portion:1},comida:{recipeId:"gambas-arroz-verduras",portion:1},cena:{recipeId:"tortilla-patata",portion:1}},
+  Viernes:{desayuno:{recipeId:"tortilla-francesa-pan-tomate",portion:1},comida:{recipeId:"rape-patata-zanahoria",portion:1},cena:{recipeId:"pollo-pasta-tomate",portion:1}},
+  Sábado:{desayuno:{recipeId:"yogur-manzana-queso",portion:1},comida:{recipeId:"ternera-boniato-pimientos",portion:1},cena:{recipeId:"tostada-queso-tomate",portion:1}},
+  Domingo:{desayuno:{recipeId:"tostada-mozzarella-jamon",portion:1},comida:{recipeId:"berenjenas-rellenas",portion:1},cena:{recipeId:"gambas-pasta-calabacin",portion:1}},
+};
+
+// =============================================================================
+// ALMACENAMIENTO (localStorage)
+// =============================================================================
+function loadLS(key, fallback){
+  try{ const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }catch{ return fallback; }
+}
+function saveLS(key, value){
+  try{ localStorage.setItem(key, JSON.stringify(value)); }catch(e){ console.error(e); }
+}
+
+// --- IndexedDB para fotos (más capacidad que localStorage) ---
+let _dbPromise = null;
+function openPhotoDB(){
+  if(_dbPromise) return _dbPromise;
+  _dbPromise = new Promise((resolve, reject)=>{
+    const req = indexedDB.open("nutriapp_fotos_db", 1);
+    req.onupgradeneeded = ()=>{ req.result.createObjectStore("fotos"); };
+    req.onsuccess = ()=> resolve(req.result);
+    req.onerror = ()=> reject(req.error);
+  });
+  return _dbPromise;
+}
+async function savePhotoBlob(id, blob){
+  const db = await openPhotoDB();
+  return new Promise((resolve,reject)=>{
+    const tx = db.transaction("fotos","readwrite");
+    tx.objectStore("fotos").put(blob, id);
+    tx.oncomplete = ()=>resolve(true);
+    tx.onerror = ()=>reject(tx.error);
+  });
+}
+async function getPhotoBlob(id){
+  const db = await openPhotoDB();
+  return new Promise((resolve,reject)=>{
+    const tx = db.transaction("fotos","readonly");
+    const req = tx.objectStore("fotos").get(id);
+    req.onsuccess = ()=>resolve(req.result||null);
+    req.onerror = ()=>reject(req.error);
+  });
+}
+async function deletePhotoBlob(id){
+  const db = await openPhotoDB();
+  return new Promise((resolve,reject)=>{
+    const tx = db.transaction("fotos","readwrite");
+    tx.objectStore("fotos").delete(id);
+    tx.oncomplete = ()=>resolve(true);
+    tx.onerror = ()=>reject(tx.error);
+  });
+}
+function compressImageFile(file, maxDim=900, quality=0.7){
+  return new Promise((resolve,reject)=>{
+    const img = new Image();
+    const reader = new FileReader();
+    reader.onload = ()=>{ img.src = reader.result; };
+    reader.onerror = reject;
+    img.onload = ()=>{
+      let w = img.width, h = img.height;
+      if(w>h && w>maxDim){ h = Math.round(h*maxDim/w); w = maxDim; }
+      else if(h>=w && h>maxDim){ w = Math.round(w*maxDim/h); h = maxDim; }
+      const canvas = document.createElement("canvas");
+      canvas.width = w; canvas.height = h;
+      canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+      canvas.toBlob(blob=> blob ? resolve(blob) : reject(new Error("No se pudo comprimir la imagen")), "image/jpeg", quality);
+    };
+    img.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+let ingredientBank = loadLS("nutriapp_ingredientes", NUTR_SEED);
+let recipes = loadLS("nutriapp_recetas", RECETAS_SEED);
+let targets = loadLS("nutriapp_objetivos", DEFAULT_TARGETS);
+let weekPlan = loadLS("nutriapp_plan", SEED_WEEKPLAN);
+let checked = loadLS("nutriapp_marcados", {});
+let mounjaroLog = loadLS("nutriapp_mounjaro", []);
+let diarioComidas = loadLS("nutriapp_diario", []);
+let activeTab = "dieta";
+let activeDay = "Lunes";
+let expandedRecipe = null;
+let recipeFilter = "todas";
+
+const BACKUP_KEYS = ["nutriapp_ingredientes","nutriapp_recetas","nutriapp_objetivos","nutriapp_plan","nutriapp_marcados","nutriapp_mounjaro","nutriapp_diario"];
+
+function persistAll(){
+  saveLS("nutriapp_ingredientes", ingredientBank);
+  saveLS("nutriapp_recetas", recipes);
+  saveLS("nutriapp_objetivos", targets);
+  saveLS("nutriapp_plan", weekPlan);
+  saveLS("nutriapp_marcados", checked);
+  saveLS("nutriapp_mounjaro", mounjaroLog);
+  saveLS("nutriapp_diario", diarioComidas);
+}
+
+// =============================================================================
+// HELPERS DE CÁLCULO
+// =============================================================================
+function num(v){ const n = parseFloat(v); return isNaN(n) ? 0 : n; }
+function ingById(id){ return ingredientBank.find(i=>i.id===id); }
+function recipeById(id){ return recipes.find(r=>r.id===id); }
+
+function calcMacros(ingredientRows){
+  let p=0,c=0,g=0,k=0;
+  for(const row of ingredientRows){
+    const ing = ingById(row.ingId);
+    if(!ing) continue;
+    const grams = ing.unit==="ud" ? row.amount*(ing.gramsPerUnit||60) : row.amount;
+    const f = grams/100;
+    p+=ing.p*f; c+=ing.c*f; g+=ing.g*f; k+=ing.k*f;
+  }
+  return {protein:Math.round(p),carbs:Math.round(c),fat:Math.round(g),kcal:Math.round(k)};
+}
+function recipeAvoidReasons(recipe){
+  const reasons = new Set();
+  for(const row of recipe.ingredients){
+    const ing = ingById(row.ingId);
+    if(ing && ing.avoid) reasons.add(ing.avoidReason || "A evitar");
+  }
+  return [...reasons];
+}
+function formatQty(amount, unit){
+  const a = Math.round(amount*10)/10;
+  if(unit==="ud") return Math.round(amount)+" ud"+(Math.round(amount)===1?"":"s");
+  if(unit==="ml") return a>=1000 ? (a/1000).toFixed(1)+" l" : a+" ml";
+  return a>=1000 ? (a/1000).toFixed(1)+" kg" : a+" g";
+}
+function dayTotals(day){
+  const plan = weekPlan[day] || {};
+  let t = {kcal:0,protein:0,carbs:0,fat:0};
+  for(const mt of MEAL_TYPES){
+    const slot = plan[mt.id]; if(!slot) continue;
+    const r = recipeById(slot.recipeId); if(!r) continue;
+    const m = calcMacros(r.ingredients);
+    t.kcal += m.kcal*slot.portion; t.protein += m.protein*slot.portion;
+    t.carbs += m.carbs*slot.portion; t.fat += m.fat*slot.portion;
+  }
+  return t;
+}
+function weekTotals(){
+  let s = {kcal:0,protein:0,carbs:0,fat:0};
+  for(const day of DAYS){ const t = dayTotals(day); s.kcal+=t.kcal; s.protein+=t.protein; s.carbs+=t.carbs; s.fat+=t.fat; }
+  return s;
+}
+function getShoppingList(){
+  const agg = {};
+  for(const day of DAYS){
+    const plan = weekPlan[day]; if(!plan) continue;
+    for(const mt of MEAL_TYPES){
+      const slot = plan[mt.id]; if(!slot) continue;
+      const r = recipeById(slot.recipeId); if(!r) continue;
+      for(const row of r.ingredients){
+        const ing = ingById(row.ingId); if(!ing) continue;
+        if(!agg[ing.id]) agg[ing.id] = {ing, amount:0};
+        agg[ing.id].amount += row.amount*slot.portion;
+      }
+    }
+  }
+  const byCat = {};
+  for(const cat of CATEGORIES) byCat[cat] = [];
+  for(const {ing,amount} of Object.values(agg)) (byCat[ing.category]||byCat["Otros"]).push({ing,amount});
+  return byCat;
+}
+
+// =============================================================================
+// RENDER: TABS
+// =============================================================================
+function setTab(tab){
+  activeTab = tab;
+  document.querySelectorAll("nav.tabbar button").forEach(b=>b.classList.toggle("active", b.dataset.tab===tab));
+  document.getElementById("fab-new-recipe").style.display = tab==="recetas" ? "flex" : "none";
+  render();
+}
+document.querySelectorAll("nav.tabbar button").forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+
+function render(){
+  const main = document.getElementById("main");
+  if(activeTab==="dieta") main.innerHTML = renderDieta();
+  else if(activeTab==="recetas") main.innerHTML = renderRecetas();
+  else if(activeTab==="lista") main.innerHTML = renderLista();
+  else main.innerHTML = renderRegistro();
+  bindEvents();
+  loadDiaryThumbnails();
+}
+
+// ---------------- DIETA ----------------
+let notesOpen = false;
+function renderDieta(){
+  const totals = dayTotals(activeDay);
+  const plan = weekPlan[activeDay] || {};
+  const overKcal = totals.kcal > targets.kcal*1.05;
+
+  return `
+  <button class="card" id="toggle-notes" style="width:100%;display:flex;align-items:center;justify-content:space-between;cursor:pointer;background:var(--soft);">
+    <span style="font-size:13px;font-weight:700;color:var(--muted2);">📋 Notas de tu nutricionista (NPV)</span>
+    <span>${notesOpen ? "▲" : "▼"}</span>
+  </button>
+  ${notesOpen ? `
+  <div class="card" style="font-size:13px;color:var(--muted2);line-height:1.5;">
+    <p><b>Patologías:</b> colon irritable, tensión arterial alta, colesterol alto (con medicación).</p>
+    <p><b>A evitar siempre:</b> aguacate, salmón, chocolate puro, quinoa, queso feta.</p>
+    <p><b>FODMAP a evitar:</b> ajo, cebolla, coliflor, brócoli, alcachofa, puerro, repollo, espárragos · manzana, pera, sandía, mango, melón, ciruelas, cerezas (excepto el extra) · leche con lactosa, yogures y quesos frescos · soja en grano, garbanzos, habichuelas, lentejas con piel.</p>
+    <p><b>Extra:</b> 1 pieza de fruta en cualquier momento del día, o 300g de sandía.</p>
+    <p><b>Reglas clave:</b> pesar todo en crudo (excepto legumbres) · mínimo 2L de agua/día · nunca frito · 1 transgresión a la semana sin excesos.</p>
+    <p><b>Suplementación:</b> Omega 3 (2 cáps./día) · Femmebalance u OYUN (2 cáps./día).</p>
+    <p style="color:var(--accent);">Las recetas marcadas con ⚠️ contienen algún ingrediente de esta lista.</p>
+  </div>` : ""}
+
+  <div class="card">
+    <h3 class="serif" style="font-size:16px;margin:0 0 10px;">🎯 Objetivo diario</h3>
+    <div class="grid4">
+      ${[["kcal","Kcal"],["protein","Prot."],["carbs","Carb."],["fat","Grasa"]].map(([k,label])=>`
+        <div>
+          <label class="field-label">${label}</label>
+          <input type="number" data-target="${k}" value="${targets[k]}">
+        </div>`).join("")}
+    </div>
+  </div>
+
+  <div class="pill-row">
+    ${DAYS.map(d=>`<button class="pill olive ${activeDay===d?'active':''}" data-day="${d}">${d}</button>`).join("")}
+  </div>
+
+  <div class="card">
+    <div class="rings-row">
+      ${macroRingHTML("Kcal", totals.kcal, targets.kcal, overKcal ? "var(--accent)" : "var(--olive)")}
+      ${macroRingHTML("Prot.", totals.protein, targets.protein, "var(--accent)")}
+      ${macroRingHTML("Carb.", totals.carbs, targets.carbs, "var(--olive)")}
+      ${macroRingHTML("Grasa", totals.fat, targets.fat, "#B9A8CC")}
+    </div>
+  </div>
+  <p class="mono" style="text-align:center;font-size:12px;color:var(--muted);margin:-6px 0 14px;">${Math.round(totals.kcal)} / ${targets.kcal} kcal</p>
+
+  <div class="btn-row" style="margin-bottom:14px;">
+    <button class="btn btn-olive" id="btn-suggest">🔄 Sugerir combinación</button>
+    <button class="btn btn-ghost" id="btn-clear-day">Vaciar</button>
+  </div>
+
+  ${MEAL_TYPES.map(mt=>{
+    const slot = plan[mt.id];
+    const pool = recipes.filter(r=>r.mealType===mt.id);
+    const r = slot ? recipeById(slot.recipeId) : null;
+    const m = r ? calcMacros(r.ingredients) : null;
+    return `
+    <div class="meal-card">
+      <p class="meal-title">${mt.icon} ${mt.label}</p>
+      <select data-assign="${mt.id}">
+        <option value="">— Sin asignar —</option>
+        ${pool.map(p=>`<option value="${p.id}" ${slot?.recipeId===p.id?'selected':''}>${p.name}</option>`).join("")}
+      </select>
+      ${r ? `
+      <div class="portion-row">
+        <div class="portion-ctrl">
+          <button class="step-btn" data-portion-down="${mt.id}">−</button>
+          <span class="mono" style="font-size:14px;font-weight:700;width:44px;text-align:center;">×${slot.portion}</span>
+          <button class="step-btn" data-portion-up="${mt.id}">+</button>
+        </div>
+        <span class="mono" style="font-size:13px;color:var(--muted2);">${Math.round(m.kcal*slot.portion)} kcal</span>
+      </div>` : ""}
+    </div>`;
+  }).join("")}
+  `;
+}
+function macroRingHTML(label, value, target, color){
+  const pct = target>0 ? Math.min(1, value/target) : 0;
+  const rad=26, circ=2*Math.PI*rad;
+  return `
+  <div class="ring-box">
+    <svg width="60" height="60" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="${rad}" fill="none" stroke="var(--line)" stroke-width="6"></circle>
+      <circle cx="32" cy="32" r="${rad}" fill="none" stroke="${color}" stroke-width="6" stroke-linecap="round"
+        stroke-dasharray="${circ}" stroke-dashoffset="${circ*(1-pct)}" transform="rotate(-90 32 32)"></circle>
+    </svg>
+    <div class="ring-val">${Math.round(value)}</div>
+    <div class="ring-label">${label}</div>
+  </div>`;
+}
+
+// ---------------- RECETAS ----------------
+function renderRecetas(){
+  const visible = recipeFilter==="todas" ? recipes : recipes.filter(r=>r.mealType===recipeFilter);
+  return `
+  <div class="pill-row">
+    ${["todas",...MEAL_TYPES.map(m=>m.id)].map(f=>`
+      <button class="pill ${recipeFilter===f?'active':''}" data-filter="${f}">${f==="todas"?"Todas":MEAL_TYPES.find(m=>m.id===f).label+"s"}</button>
+    `).join("")}
+  </div>
+  ${visible.length===0 ? `<div class="empty-state">No hay recetas en este filtro.</div>` : visible.map(r=>recipeCardHTML(r)).join("")}
+  `;
+}
+function recipeCardHTML(r){
+  const m = calcMacros(r.ingredients);
+  const avoidReasons = recipeAvoidReasons(r);
+  const isOpen = expandedRecipe===r.id;
+  return `
+  <div class="recipe-card">
+    <div class="recipe-top">
+      <div class="seal"><span class="kcal mono">${m.kcal}</span><span class="kcal-label">kcal</span></div>
+      <div class="recipe-info">
+        <div class="recipe-name-row">
+          <p class="recipe-name serif">${r.name||"Sin nombre"}</p>
+          ${r.nutricionista ? `<span class="badge-npv">NPV</span>` : ""}
+        </div>
+        <div class="recipe-meta">
+          <div class="macros-line"><span>P ${m.protein}g</span><span>C ${m.carbs}g</span><span>G ${m.fat}g</span></div>
+          <span class="time-line">${r.tiempo} min</span>
+        </div>
+        ${avoidReasons.length ? `<p class="avoid-warning">⚠️ ${avoidReasons.join(" · ")}</p>` : ""}
+      </div>
+    </div>
+    <div class="recipe-actions">
+      <button data-toggle-recipe="${r.id}">${isOpen?"Ocultar receta":"Ver receta"}</button>
+      <button data-edit-recipe="${r.id}">Editar</button>
+      <button class="danger" data-delete-recipe="${r.id}">Eliminar</button>
+    </div>
+    ${isOpen ? `
+    <div class="recipe-detail">
+      <p class="detail-label">Ingredientes</p>
+      <ul class="ing-list">${r.ingredients.map(row=>{const ing=ingById(row.ingId); return `<li>· ${ing?ing.name:row.ingId} — ${row.amount} ${ing?(ing.unit==='ud'?'ud':ing.unit):'g'}</li>`;}).join("")}</ul>
+      ${r.pasos && r.pasos.filter(Boolean).length ? `
+      <p class="detail-label">Preparación</p>
+      <ol class="step-list">${r.pasos.filter(Boolean).map((p,i)=>`<li><span class="step-num mono">${i+1}.</span>${p}</li>`).join("")}</ol>` : ""}
+    </div>` : ""}
+  </div>`;
+}
+
+// ---------------- LISTA ----------------
+function renderLista(){
+  const list = getShoppingList();
+  const totals = weekTotals();
+  const hasAny = Object.values(list).some(arr=>arr.length>0);
+  return `
+  <div class="card">
+    <p class="field-label" style="margin-bottom:4px;">Total semana planificada</p>
+    <p class="serif" style="font-size:22px;font-weight:700;margin:0;">🔥 ${Math.round(totals.kcal)} kcal</p>
+    <p class="mono" style="font-size:13px;color:var(--muted);margin:4px 0 0;">P ${Math.round(totals.protein)}g · C ${Math.round(totals.carbs)}g · G ${Math.round(totals.fat)}g</p>
+  </div>
+  ${!hasAny ? `<div class="empty-state">Lista vacía.<br>Asigna recetas en la pestaña Dieta.</div>` : ""}
+  ${Object.entries(list).filter(([,items])=>items.length>0).map(([cat,items])=>`
+    <p class="shop-cat-title">${cat}</p>
+    ${items.sort((a,b)=>a.ing.name.localeCompare(b.ing.name)).map(({ing,amount})=>{
+      const isChecked = !!checked[ing.id];
+      return `
+      <div class="shop-item ${isChecked?'checked':''}" data-toggle-shop="${ing.id}">
+        <span class="shop-check">${isChecked?'✓':''}</span>
+        <span class="shop-name">${ing.name}</span>
+        <span class="shop-qty">${formatQty(amount, ing.unit)}</span>
+      </div>`;
+    }).join("")}
+  `).join("")}
+  `;
+}
+
+// ---------------- REGISTRO MOUNJARO + DIARIO DE COMIDAS ----------------
+let regDraft = { fecha: new Date().toISOString().slice(0,10), hora: new Date().toTimeString().slice(0,5), dosis: "", efectos: "" };
+const DOSIS_COMUNES = [2.5, 5, 7.5, 10, 12.5, 15];
+let registroSubTab = "inyecciones";
+let diarioDraft = { fecha: new Date().toISOString().slice(0,10), hora: new Date().toTimeString().slice(0,5), nota:"", platoFile:null, comidoFile:null, platoPreview:null, comidoPreview:null };
+
+function renderRegistro(){
+  return `
+  <div class="pill-row">
+    <button class="pill ${registroSubTab==='inyecciones'?'active':''}" data-reg-subtab="inyecciones">💉 Inyecciones</button>
+    <button class="pill ${registroSubTab==='diario'?'active':''}" data-reg-subtab="diario">📸 Diario de comidas</button>
+  </div>
+  ${registroSubTab==='inyecciones' ? renderRegistroInyecciones() : renderDiarioComidas()}
+  `;
+}
+
+function renderRegistroInyecciones(){
+  const sorted = [...mounjaroLog].sort((a,b)=> (b.fecha+b.hora).localeCompare(a.fecha+a.hora));
+  return `
+  <div class="card">
+    <h3 class="serif" style="font-size:16px;margin:0 0 10px;">💉 Nueva inyección</h3>
+    <div class="grid2" style="margin-bottom:10px;">
+      <div>
+        <label class="field-label">Fecha</label>
+        <input type="date" id="reg-fecha" value="${regDraft.fecha}">
+      </div>
+      <div>
+        <label class="field-label">Hora</label>
+        <input type="time" id="reg-hora" value="${regDraft.hora}">
+      </div>
+    </div>
+    <label class="field-label">Dosis (mg)</label>
+    <div class="pill-row" style="margin-bottom:4px;">
+      ${DOSIS_COMUNES.map(d=>`<button class="pill ${String(regDraft.dosis)===String(d)?'active':''}" data-dosis-pick="${d}">${d} mg</button>`).join("")}
+    </div>
+    <input type="number" step="0.25" id="reg-dosis" value="${regDraft.dosis}" placeholder="mg" style="margin-bottom:10px;">
+    <label class="field-label">Efectos secundarios (opcional)</label>
+    <textarea id="reg-efectos" rows="2" placeholder="Ej. náuseas leves, dolor de cabeza...">${regDraft.efectos}</textarea>
+    <button class="btn btn-accent" id="reg-guardar" style="width:100%;margin-top:12px;">Guardar registro</button>
+  </div>
+
+  <h3 class="serif" style="font-size:15px;margin:18px 0 8px;">Historial</h3>
+  ${sorted.length===0 ? `<div class="empty-state">Todavía no has registrado ninguna inyección.</div>` : sorted.map(entry=>`
+    <div class="card" style="padding:12px 14px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <p style="margin:0;font-weight:700;font-size:14px;">${formatFechaBonita(entry.fecha)} · ${entry.hora}</p>
+          <p class="mono" style="margin:2px 0 0;font-size:13px;color:var(--accent);font-weight:700;">${entry.dosis} mg</p>
+        </div>
+        <button class="icon-btn" data-reg-delete="${entry.id}" style="color:var(--accent);">✕</button>
+      </div>
+      ${entry.efectos ? `<p style="margin:8px 0 0;font-size:13px;color:var(--muted2);">${entry.efectos}</p>` : ""}
+    </div>`).join("")}
+  `;
+}
+
+function renderDiarioComidas(){
+  const sorted = [...diarioComidas].sort((a,b)=> (b.fecha+b.hora).localeCompare(a.fecha+a.hora));
+  return `
+  <div class="card">
+    <h3 class="serif" style="font-size:16px;margin:0 0 10px;">📸 Nueva entrada</h3>
+    <div class="grid2" style="margin-bottom:10px;">
+      <div>
+        <label class="field-label">Fecha</label>
+        <input type="date" id="dia-fecha" value="${diarioDraft.fecha}">
+      </div>
+      <div>
+        <label class="field-label">Hora</label>
+        <input type="time" id="dia-hora" value="${diarioDraft.hora}">
+      </div>
+    </div>
+    <div class="photo-upload-row">
+      <div class="photo-slot">
+        <label class="photo-label">Lo que serví</label>
+        <div class="photo-drop">
+          ${diarioDraft.platoPreview ? `<img src="${diarioDraft.platoPreview}"><button class="photo-remove-x" data-clear-photo="plato">✕</button>` : `<span>🍽️ Toca para foto</span>`}
+          <input type="file" accept="image/*" capture="environment" id="dia-foto-plato">
+        </div>
+      </div>
+      <div class="photo-slot">
+        <label class="photo-label">Lo que comí</label>
+        <div class="photo-drop">
+          ${diarioDraft.comidoPreview ? `<img src="${diarioDraft.comidoPreview}"><button class="photo-remove-x" data-clear-photo="comido">✕</button>` : `<span>🥣 Toca para foto</span>`}
+          <input type="file" accept="image/*" capture="environment" id="dia-foto-comido">
+        </div>
+      </div>
+    </div>
+    <label class="field-label">Nota (opcional)</label>
+    <textarea id="dia-nota" rows="2" placeholder="Ej. me llené a la mitad, sin hambre hoy...">${diarioDraft.nota}</textarea>
+    <button class="btn btn-accent" id="dia-guardar" style="width:100%;margin-top:12px;">Guardar entrada</button>
+  </div>
+
+  <h3 class="serif" style="font-size:15px;margin:18px 0 8px;">Historial</h3>
+  ${sorted.length===0 ? `<div class="empty-state">Todavía no has añadido ninguna entrada al diario.</div>` : sorted.map(entry=>`
+    <div class="card" style="padding:12px 14px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <p style="margin:0;font-weight:700;font-size:14px;">${formatFechaBonita(entry.fecha)} · ${entry.hora}</p>
+        <button class="icon-btn" data-diario-delete="${entry.id}" style="color:var(--accent);">✕</button>
+      </div>
+      <div class="diary-thumbs">
+        <div>
+          <img data-photo-thumb="${entry.id}:plato" src="" alt="">
+          <p class="thumb-label">Serví</p>
+        </div>
+        <div>
+          <img data-photo-thumb="${entry.id}:comido" src="" alt="">
+          <p class="thumb-label">Comí</p>
+        </div>
+      </div>
+      ${entry.nota ? `<p style="margin:8px 0 0;font-size:13px;color:var(--muted2);">${entry.nota}</p>` : ""}
+    </div>`).join("")}
+  `;
+}
+function formatFechaBonita(fecha){
+  const [y,m,d] = fecha.split("-");
+  return `${d}/${m}/${y}`;
+}
+
+function loadDiaryThumbnails(){
+  document.querySelectorAll("[data-photo-thumb]").forEach(async img=>{
+    const [entryId, kind] = img.dataset.photoThumb.split(":");
+    const blob = await getPhotoBlob(entryId+":"+kind);
+    if(blob){ img.src = URL.createObjectURL(blob); }
+    else { img.style.display = "none"; }
+  });
+}
+
+// =============================================================================
+// EVENTOS
+// =============================================================================
+function bindEvents(){
+  // Dieta
+  const notesToggle = document.getElementById("toggle-notes");
+  if(notesToggle) notesToggle.onclick = ()=>{ notesOpen = !notesOpen; render(); };
+
+  document.querySelectorAll("[data-target]").forEach(inp=>{
+    inp.onchange = ()=>{ targets[inp.dataset.target] = num(inp.value); persistAll(); render(); };
+  });
+  document.querySelectorAll("[data-day]").forEach(b=>{
+    b.onclick = ()=>{ activeDay = b.dataset.day; render(); };
+  });
+  const suggestBtn = document.getElementById("btn-suggest");
+  if(suggestBtn) suggestBtn.onclick = ()=>{ suggestDay(activeDay); persistAll(); render(); };
+  const clearBtn = document.getElementById("btn-clear-day");
+  if(clearBtn) clearBtn.onclick = ()=>{ delete weekPlan[activeDay]; persistAll(); render(); };
+
+  document.querySelectorAll("[data-assign]").forEach(sel=>{
+    sel.onchange = ()=>{
+      const mealId = sel.dataset.assign;
+      const recipeId = sel.value;
+      if(!weekPlan[activeDay]) weekPlan[activeDay] = {};
+      if(!recipeId) delete weekPlan[activeDay][mealId];
+      else weekPlan[activeDay][mealId] = {recipeId, portion: weekPlan[activeDay][mealId]?.portion || 1};
+      persistAll(); render();
+    };
+  });
+  document.querySelectorAll("[data-portion-up]").forEach(b=>{
+    b.onclick = ()=>{ const mt=b.dataset.portionUp; weekPlan[activeDay][mt].portion = Math.round((weekPlan[activeDay][mt].portion+0.5)*10)/10; persistAll(); render(); };
+  });
+  document.querySelectorAll("[data-portion-down]").forEach(b=>{
+    b.onclick = ()=>{ const mt=b.dataset.portionDown; weekPlan[activeDay][mt].portion = Math.max(0.5, Math.round((weekPlan[activeDay][mt].portion-0.5)*10)/10); persistAll(); render(); };
+  });
+
+  // Recetas
+  document.querySelectorAll("[data-filter]").forEach(b=>{
+    b.onclick = ()=>{ recipeFilter = b.dataset.filter; render(); };
+  });
+  document.querySelectorAll("[data-toggle-recipe]").forEach(b=>{
+    b.onclick = ()=>{ const id=b.dataset.toggleRecipe; expandedRecipe = expandedRecipe===id ? null : id; render(); };
+  });
+  document.querySelectorAll("[data-edit-recipe]").forEach(b=>{
+    b.onclick = ()=>{ openEditor(recipeById(b.dataset.editRecipe)); };
+  });
+  document.querySelectorAll("[data-delete-recipe]").forEach(b=>{
+    b.onclick = ()=>{
+      const id = b.dataset.deleteRecipe;
+      if(!confirm("¿Eliminar esta receta?")) return;
+      recipes = recipes.filter(r=>r.id!==id);
+      for(const day in weekPlan) for(const meal in weekPlan[day]) if(weekPlan[day][meal]?.recipeId===id) delete weekPlan[day][meal];
+      persistAll(); render();
+    };
+  });
+
+  // Lista
+  document.querySelectorAll("[data-toggle-shop]").forEach(el=>{
+    el.onclick = ()=>{ const id=el.dataset.toggleShop; checked[id] = !checked[id]; persistAll(); render(); };
+  });
+
+  // Registro Mounjaro
+  const regFecha = document.getElementById("reg-fecha");
+  if(regFecha){
+    regFecha.onchange = ()=>{ regDraft.fecha = regFecha.value; };
+    document.getElementById("reg-hora").onchange = e=>{ regDraft.hora = e.target.value; };
+    document.getElementById("reg-dosis").oninput = e=>{ regDraft.dosis = e.target.value; };
+    document.getElementById("reg-efectos").oninput = e=>{ regDraft.efectos = e.target.value; };
+    document.querySelectorAll("[data-dosis-pick]").forEach(b=>{
+      b.onclick = ()=>{ regDraft.dosis = b.dataset.dosisPick; document.getElementById("reg-dosis").value = regDraft.dosis; render(); };
+    });
+    document.getElementById("reg-guardar").onclick = ()=>{
+      if(!regDraft.dosis){ alert("Indica la dosis en mg."); return; }
+      mounjaroLog.push({ id:"m"+Date.now(), fecha:regDraft.fecha, hora:regDraft.hora, dosis:num(regDraft.dosis), efectos:regDraft.efectos.trim() });
+      persistAll();
+      regDraft = { fecha: new Date().toISOString().slice(0,10), hora: new Date().toTimeString().slice(0,5), dosis: "", efectos: "" };
+      render();
+    };
+  }
+  document.querySelectorAll("[data-reg-delete]").forEach(b=>{
+    b.onclick = ()=>{
+      if(!confirm("¿Eliminar este registro?")) return;
+      mounjaroLog = mounjaroLog.filter(e=>e.id!==b.dataset.regDelete);
+      persistAll(); render();
+    };
+  });
+
+  // Sub-tabs Registro
+  document.querySelectorAll("[data-reg-subtab]").forEach(b=>{
+    b.onclick = ()=>{ registroSubTab = b.dataset.regSubtab; render(); };
+  });
+
+  // Diario de comidas
+  const diaFecha = document.getElementById("dia-fecha");
+  if(diaFecha){
+    diaFecha.onchange = ()=>{ diarioDraft.fecha = diaFecha.value; };
+    document.getElementById("dia-hora").onchange = e=>{ diarioDraft.hora = e.target.value; };
+    document.getElementById("dia-nota").oninput = e=>{ diarioDraft.nota = e.target.value; };
+
+    document.getElementById("dia-foto-plato").onchange = async e=>{
+      const file = e.target.files[0]; if(!file) return;
+      diarioDraft.platoFile = await compressImageFile(file);
+      diarioDraft.platoPreview = URL.createObjectURL(diarioDraft.platoFile);
+      render();
+    };
+    document.getElementById("dia-foto-comido").onchange = async e=>{
+      const file = e.target.files[0]; if(!file) return;
+      diarioDraft.comidoFile = await compressImageFile(file);
+      diarioDraft.comidoPreview = URL.createObjectURL(diarioDraft.comidoFile);
+      render();
+    };
+    document.querySelectorAll("[data-clear-photo]").forEach(b=>{
+      b.onclick = (ev)=>{
+        ev.preventDefault();
+        const kind = b.dataset.clearPhoto;
+        if(kind==="plato"){ diarioDraft.platoFile=null; diarioDraft.platoPreview=null; }
+        else { diarioDraft.comidoFile=null; diarioDraft.comidoPreview=null; }
+        render();
+      };
+    });
+    document.getElementById("dia-guardar").onclick = async ()=>{
+      const id = "d"+Date.now();
+      if(diarioDraft.platoFile) await savePhotoBlob(id+":plato", diarioDraft.platoFile);
+      if(diarioDraft.comidoFile) await savePhotoBlob(id+":comido", diarioDraft.comidoFile);
+      diarioComidas.push({ id, fecha:diarioDraft.fecha, hora:diarioDraft.hora, nota:diarioDraft.nota.trim() });
+      persistAll();
+      diarioDraft = { fecha: new Date().toISOString().slice(0,10), hora: new Date().toTimeString().slice(0,5), nota:"", platoFile:null, comidoFile:null, platoPreview:null, comidoPreview:null };
+      render();
+    };
+  }
+  document.querySelectorAll("[data-diario-delete]").forEach(b=>{
+    b.onclick = async ()=>{
+      if(!confirm("¿Eliminar esta entrada y sus fotos?")) return;
+      const id = b.dataset.diarioDelete;
+      await deletePhotoBlob(id+":plato");
+      await deletePhotoBlob(id+":comido");
+      diarioComidas = diarioComidas.filter(e=>e.id!==id);
+      persistAll(); render();
+    };
+  });
+}
+
+function suggestDay(day){
+  const plan = {};
+  for(const mt of MEAL_TYPES){
+    const fullPool = recipes.filter(r=>r.mealType===mt.id);
+    const safePool = fullPool.filter(r=>recipeAvoidReasons(r).length===0);
+    const pool = safePool.length>0 ? safePool : fullPool;
+    if(pool.length===0) continue;
+    const mealTarget = targets.kcal*mt.share;
+    let best=null, bestDist=Infinity;
+    for(const r of pool){
+      const base = calcMacros(r.ingredients).kcal || 1;
+      for(const portion of [0.5,1,1.5,2]){
+        const dist = Math.abs(base*portion - mealTarget);
+        if(dist<bestDist){ bestDist=dist; best={recipeId:r.id, portion}; }
+      }
+    }
+    if(best) plan[mt.id]=best;
+  }
+  weekPlan[day]=plan;
+}
+
+// =============================================================================
+// EDITOR DE RECETAS (modal)
+// =============================================================================
+let editingRecipe = null;
+let newIngFor = null;
+let newIngDraft = {name:"",category:"Otros",unit:"g",p:"",c:"",g:"",k:"",avoid:false,avoidReason:""};
+
+document.getElementById("fab-new-recipe").onclick = ()=>{
+  openEditor({id:"r"+Date.now(), name:"", mealType:"comida", tiempo:20, ingredients:[], pasos:[""]});
+};
+document.getElementById("editor-close").onclick = ()=>{ document.getElementById("editor-overlay").classList.remove("open"); };
+
+function openEditor(recipe){
+  editingRecipe = JSON.parse(JSON.stringify(recipe));
+  if(!editingRecipe.pasos || !editingRecipe.pasos.length) editingRecipe.pasos=[""];
+  newIngFor = null;
+  document.getElementById("editor-title").textContent = recipe.name ? "Editar receta" : "Nueva receta";
+  renderEditor();
+  document.getElementById("editor-overlay").classList.add("open");
+}
+
+function renderEditor(){
+  const r = editingRecipe;
+  const preview = calcMacros(r.ingredients.filter(i=>i.ingId));
+  const body = document.getElementById("editor-body");
+  body.innerHTML = `
+    <label class="field-label">Nombre</label>
+    <input type="text" id="ed-name" value="${(r.name||"").replace(/"/g,'&quot;')}" placeholder="Ej. Pisto con huevo" style="margin-bottom:12px;">
+
+    <div class="grid2" style="margin-bottom:12px;">
+      <div>
+        <label class="field-label">Tipo</label>
+        <select id="ed-mealtype">${MEAL_TYPES.map(mt=>`<option value="${mt.id}" ${r.mealType===mt.id?'selected':''}>${mt.label}</option>`).join("")}</select>
+      </div>
+      <div>
+        <label class="field-label">Tiempo (min)</label>
+        <input type="number" id="ed-tiempo" value="${r.tiempo||0}">
+      </div>
+    </div>
+
+    <div class="card" style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;margin-bottom:12px;">
+      <span class="field-label" style="margin:0;">Macros calculadas</span>
+      <span class="mono" style="font-size:13px;">${preview.kcal} kcal · P${preview.protein} C${preview.carbs} G${preview.fat}</span>
+    </div>
+
+    <label class="field-label">Ingredientes</label>
+    <div id="ed-ingredients"></div>
+    <button class="btn btn-ghost" id="ed-add-ingredient" style="margin:6px 0 16px;">+ Añadir ingrediente</button>
+
+    <label class="field-label">Preparación</label>
+    <div id="ed-steps"></div>
+    <button class="btn btn-ghost" id="ed-add-step" style="margin:6px 0 16px;">+ Añadir paso</button>
+
+    <button class="btn btn-accent" id="ed-save" style="width:100%;" ${!r.name.trim()?'disabled':''}>Guardar receta</button>
+  `;
+  renderEditorIngredients();
+  renderEditorSteps();
+
+  document.getElementById("ed-name").oninput = e=>{ editingRecipe.name=e.target.value; document.getElementById("ed-save").disabled = !e.target.value.trim(); };
+  document.getElementById("ed-mealtype").onchange = e=>{ editingRecipe.mealType=e.target.value; };
+  document.getElementById("ed-tiempo").onchange = e=>{ editingRecipe.tiempo=num(e.target.value); };
+  document.getElementById("ed-add-ingredient").onclick = ()=>{ editingRecipe.ingredients.push({ingId:"",amount:""}); renderEditorIngredients(); };
+  document.getElementById("ed-add-step").onclick = ()=>{ editingRecipe.pasos.push(""); renderEditorSteps(); };
+  document.getElementById("ed-save").onclick = ()=>{
+    if(!editingRecipe.name.trim()) return;
+    const idx = recipes.findIndex(x=>x.id===editingRecipe.id);
+    if(idx>=0) recipes[idx]=editingRecipe; else recipes.push(editingRecipe);
+    persistAll();
+    document.getElementById("editor-overlay").classList.remove("open");
+    render();
+  };
+}
+
+function renderEditorIngredients(){
+  const container = document.getElementById("ed-ingredients");
+  container.innerHTML = editingRecipe.ingredients.map((row,i)=>{
+    const ing = ingById(row.ingId);
+    return `
+    <div class="ing-row">
+      <div style="flex:1;min-width:0;">
+        <select data-ing-select="${i}">
+          <option value="">— elegir —</option>
+          ${ingredientBank.map(ib=>`<option value="${ib.id}" ${row.ingId===ib.id?'selected':''}>${ib.name}${ib.avoid?' ⚠️ evitar':''}</option>`).join("")}
+          <option value="__new__">+ Nuevo ingrediente…</option>
+        </select>
+        ${ing && ing.avoid ? `<p class="avoid-warning" style="margin-top:4px;">⚠️ ${ing.avoidReason}</p>` : ""}
+        ${newIngFor===i ? renderNewIngredientBox() : ""}
+      </div>
+      <input type="number" data-ing-amount="${i}" value="${row.amount}" placeholder="${ing?.unit==='ud'?'uds':ing?.unit==='ml'?'ml':'g'}">
+      <button class="icon-btn" data-ing-remove="${i}" style="color:var(--accent);">✕</button>
+    </div>`;
+  }).join("");
+
+  container.querySelectorAll("[data-ing-select]").forEach(sel=>{
+    sel.onchange = ()=>{
+      const i = +sel.dataset.ingSelect;
+      if(sel.value==="__new__"){ newIngFor=i; newIngDraft={name:"",category:"Otros",unit:"g",p:"",c:"",g:"",k:"",avoid:false,avoidReason:""}; }
+      else { editingRecipe.ingredients[i].ingId = sel.value; newIngFor=null; }
+      renderEditorIngredients();
+    };
+  });
+  container.querySelectorAll("[data-ing-amount]").forEach(inp=>{
+    inp.onchange = ()=>{ editingRecipe.ingredients[+inp.dataset.ingAmount].amount = num(inp.value); renderEditor(); };
+  });
+  container.querySelectorAll("[data-ing-remove]").forEach(b=>{
+    b.onclick = ()=>{ editingRecipe.ingredients.splice(+b.dataset.ingRemove,1); renderEditor(); };
+  });
+  bindNewIngredientBox();
+}
+
+function renderNewIngredientBox(){
+  return `
+  <div class="new-ing-box" id="new-ing-box">
+    <input type="text" id="ni-name" placeholder="Nombre del ingrediente" value="${newIngDraft.name}">
+    <div class="grid2">
+      <select id="ni-category">${CATEGORIES.map(c=>`<option value="${c}" ${newIngDraft.category===c?'selected':''}>${c}</option>`).join("")}</select>
+      <select id="ni-unit">
+        <option value="g" ${newIngDraft.unit==='g'?'selected':''}>gramos</option>
+        <option value="ml" ${newIngDraft.unit==='ml'?'selected':''}>mililitros</option>
+        <option value="ud" ${newIngDraft.unit==='ud'?'selected':''}>unidades</option>
+      </select>
+    </div>
+    <p class="mono" style="font-size:10px;text-transform:uppercase;color:var(--muted);margin:2px 0;">Macros por 100${newIngDraft.unit==='ud'?'g (aprox. por unidad)':newIngDraft.unit}</p>
+    <div class="grid4">
+      <input type="number" id="ni-k" placeholder="Kcal" value="${newIngDraft.k}">
+      <input type="number" id="ni-p" placeholder="Prot" value="${newIngDraft.p}">
+      <input type="number" id="ni-c" placeholder="Carb" value="${newIngDraft.c}">
+      <input type="number" id="ni-g" placeholder="Grasa" value="${newIngDraft.g}">
+    </div>
+    <label class="checkbox-row"><input type="checkbox" id="ni-avoid" ${newIngDraft.avoid?'checked':''}> Marcar como "a evitar" (alergia, FODMAP…)</label>
+    <input type="text" id="ni-avoid-reason" placeholder="Motivo (ej. FODMAP)" value="${newIngDraft.avoidReason}" style="display:${newIngDraft.avoid?'block':'none'};">
+    <div class="btn-row">
+      <button class="btn btn-olive" id="ni-confirm">Añadir al banco</button>
+      <button class="btn btn-ghost" id="ni-cancel">Cancelar</button>
+    </div>
+  </div>`;
+}
+function bindNewIngredientBox(){
+  const box = document.getElementById("new-ing-box");
+  if(!box) return;
+  document.getElementById("ni-name").oninput = e=>{ newIngDraft.name=e.target.value; };
+  document.getElementById("ni-category").onchange = e=>{ newIngDraft.category=e.target.value; };
+  document.getElementById("ni-unit").onchange = e=>{ newIngDraft.unit=e.target.value; };
+  document.getElementById("ni-k").oninput = e=>{ newIngDraft.k=e.target.value; };
+  document.getElementById("ni-p").oninput = e=>{ newIngDraft.p=e.target.value; };
+  document.getElementById("ni-c").oninput = e=>{ newIngDraft.c=e.target.value; };
+  document.getElementById("ni-g").oninput = e=>{ newIngDraft.g=e.target.value; };
+  document.getElementById("ni-avoid").onchange = e=>{ newIngDraft.avoid=e.target.checked; renderEditorIngredients(); };
+  const reasonInput = document.getElementById("ni-avoid-reason");
+  if(reasonInput) reasonInput.oninput = e=>{ newIngDraft.avoidReason=e.target.value; };
+  document.getElementById("ni-cancel").onclick = ()=>{ newIngFor=null; renderEditorIngredients(); };
+  document.getElementById("ni-confirm").onclick = ()=>{
+    if(!newIngDraft.name.trim()) return;
+    const id = newIngDraft.name.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"") || ("ing"+Date.now());
+    const newIng = {
+      id, name:newIngDraft.name, category:newIngDraft.category, unit:newIngDraft.unit,
+      gramsPerUnit: newIngDraft.unit==="ud" ? 60 : undefined,
+      p:num(newIngDraft.p), c:num(newIngDraft.c), g:num(newIngDraft.g), k:num(newIngDraft.k),
+      avoid:newIngDraft.avoid, avoidReason: newIngDraft.avoid ? (newIngDraft.avoidReason||"A evitar") : undefined,
+    };
+    ingredientBank = [...ingredientBank.filter(i=>i.id!==id), newIng];
+    editingRecipe.ingredients[newIngFor].ingId = id;
+    newIngFor = null;
+    persistAll();
+    renderEditor();
+  };
+}
+
+function renderEditorSteps(){
+  const container = document.getElementById("ed-steps");
+  container.innerHTML = editingRecipe.pasos.map((p,i)=>`
+    <div class="step-row">
+      <span class="mono" style="color:var(--accent);padding-top:9px;width:16px;">${i+1}.</span>
+      <textarea data-step="${i}" rows="1">${(p||"").replace(/</g,'&lt;')}</textarea>
+      <button class="icon-btn" data-step-remove="${i}" style="color:var(--accent);">✕</button>
+    </div>`).join("");
+  container.querySelectorAll("[data-step]").forEach(t=>{
+    t.oninput = ()=>{ editingRecipe.pasos[+t.dataset.step] = t.value; };
+  });
+  container.querySelectorAll("[data-step-remove]").forEach(b=>{
+    b.onclick = ()=>{ editingRecipe.pasos.splice(+b.dataset.stepRemove,1); renderEditorSteps(); };
+  });
+}
+
+// =============================================================================
+// COPIA DE SEGURIDAD (exportar / importar)
+// =============================================================================
+document.getElementById("open-backup").onclick = ()=>{
+  document.getElementById("backup-import-status").textContent = "";
+  document.getElementById("backup-overlay").classList.add("open");
+};
+document.getElementById("backup-close").onclick = ()=>{ document.getElementById("backup-overlay").classList.remove("open"); };
+
+document.getElementById("backup-export").onclick = ()=>{
+  const backup = { exportedAt: new Date().toISOString(), data: {} };
+  BACKUP_KEYS.forEach(k=>{ backup.data[k] = loadLS(k, null); });
+  const blob = new Blob([JSON.stringify(backup, null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const today = new Date().toISOString().slice(0,10);
+  a.href = url;
+  a.download = `mi-dieta-backup-${today}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
+document.getElementById("backup-import-file").onchange = (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const status = document.getElementById("backup-import-status");
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    try{
+      const parsed = JSON.parse(reader.result);
+      const data = parsed.data || parsed; // admite backup con o sin envoltorio
+      if(!confirm("Esto sustituirá todos tus datos actuales por los del archivo. ¿Continuar?")){
+        status.textContent = "Importación cancelada.";
+        return;
+      }
+      BACKUP_KEYS.forEach(k=>{ if(data[k] !== undefined && data[k] !== null) saveLS(k, data[k]); });
+      ingredientBank = loadLS("nutriapp_ingredientes", NUTR_SEED);
+      recipes = loadLS("nutriapp_recetas", RECETAS_SEED);
+      targets = loadLS("nutriapp_objetivos", DEFAULT_TARGETS);
+      weekPlan = loadLS("nutriapp_plan", SEED_WEEKPLAN);
+      checked = loadLS("nutriapp_marcados", {});
+      mounjaroLog = loadLS("nutriapp_mounjaro", []);
+      diarioComidas = loadLS("nutriapp_diario", []);
+      status.style.color = "var(--olive)";
+      status.textContent = "✓ Copia restaurada correctamente.";
+      render();
+    }catch(err){
+      status.style.color = "var(--accent)";
+      status.textContent = "No se pudo leer el archivo. Comprueba que es una copia de seguridad válida.";
+    }
+  };
+  reader.readAsText(file);
+};
+
+// =============================================================================
+// INICIO
+// =============================================================================
+render();
+</script>
+</body>
+</html>
