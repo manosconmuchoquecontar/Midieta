@@ -561,12 +561,13 @@ let weekPlan = loadLS("nutriapp_plan", SEED_WEEKPLAN);
 let checked = loadLS("nutriapp_marcados", {});
 let mounjaroLog = loadLS("nutriapp_mounjaro", []);
 let diarioComidas = loadLS("nutriapp_diario", []);
+let medidasLog = loadLS("nutriapp_medidas", []);
 let activeTab = "dieta";
 let activeDay = "Lunes";
 let expandedRecipe = null;
 let recipeFilter = "todas";
 
-const BACKUP_KEYS = ["nutriapp_ingredientes","nutriapp_recetas","nutriapp_objetivos","nutriapp_plan","nutriapp_marcados","nutriapp_mounjaro","nutriapp_diario"];
+const BACKUP_KEYS = ["nutriapp_ingredientes","nutriapp_recetas","nutriapp_objetivos","nutriapp_plan","nutriapp_marcados","nutriapp_mounjaro","nutriapp_diario","nutriapp_medidas"];
 
 function persistAll(){
   saveLS("nutriapp_ingredientes", ingredientBank);
@@ -576,6 +577,7 @@ function persistAll(){
   saveLS("nutriapp_marcados", checked);
   saveLS("nutriapp_mounjaro", mounjaroLog);
   saveLS("nutriapp_diario", diarioComidas);
+  saveLS("nutriapp_medidas", medidasLog);
 }
 
 // =============================================================================
@@ -841,14 +843,17 @@ let regDraft = { fecha: new Date().toISOString().slice(0,10), hora: new Date().t
 const DOSIS_COMUNES = [2.5, 5, 7.5, 10, 12.5, 15];
 let registroSubTab = "inyecciones";
 let diarioDraft = { fecha: new Date().toISOString().slice(0,10), hora: new Date().toTimeString().slice(0,5), nota:"", platoFile:null, comidoFile:null, platoPreview:null, comidoPreview:null };
+const MEDIDAS_CAMPOS = [["brazo","Brazo"],["pecho","Pecho"],["cintura","Cintura"],["cadera","Cadera"],["pierna","Pierna"]];
+let medidaDraft = { fecha: new Date().toISOString().slice(0,10), peso:"", brazo:"", pecho:"", cintura:"", cadera:"", pierna:"" };
 
 function renderRegistro(){
   return `
   <div class="pill-row">
     <button class="pill ${registroSubTab==='inyecciones'?'active':''}" data-reg-subtab="inyecciones">💉 Inyecciones</button>
     <button class="pill ${registroSubTab==='diario'?'active':''}" data-reg-subtab="diario">📸 Diario de comidas</button>
+    <button class="pill ${registroSubTab==='medidas'?'active':''}" data-reg-subtab="medidas">📏 Medidas</button>
   </div>
-  ${registroSubTab==='inyecciones' ? renderRegistroInyecciones() : renderDiarioComidas()}
+  ${registroSubTab==='inyecciones' ? renderRegistroInyecciones() : registroSubTab==='diario' ? renderDiarioComidas() : renderMedidas()}
   `;
 }
 
@@ -947,6 +952,61 @@ function renderDiarioComidas(){
       </div>
       ${entry.nota ? `<p style="margin:8px 0 0;font-size:13px;color:var(--muted2);">${entry.nota}</p>` : ""}
     </div>`).join("")}
+  `;
+}
+function renderMedidas(){
+  const sorted = [...medidasLog].sort((a,b)=> b.fecha.localeCompare(a.fecha));
+  return `
+  <div class="card">
+    <h3 class="serif" style="font-size:16px;margin:0 0 10px;">📏 Nueva medición</h3>
+    <label class="field-label">Fecha</label>
+    <input type="date" id="med-fecha" value="${medidaDraft.fecha}" style="margin-bottom:10px;">
+    <label class="field-label">Peso (kg)</label>
+    <input type="number" step="0.1" id="med-peso" value="${medidaDraft.peso}" placeholder="kg" style="margin-bottom:10px;font-weight:700;font-size:16px;">
+    <div class="grid2" style="gap:10px;">
+      ${MEDIDAS_CAMPOS.map(([k,label])=>`
+        <div>
+          <label class="field-label">${label} (cm)</label>
+          <input type="number" step="0.1" id="med-${k}" value="${medidaDraft[k]}" placeholder="cm" style="margin-bottom:10px;">
+        </div>`).join("")}
+    </div>
+    <button class="btn btn-accent" id="med-guardar" style="width:100%;margin-top:4px;">Guardar medición</button>
+  </div>
+
+  <h3 class="serif" style="font-size:15px;margin:18px 0 8px;">Historial</h3>
+  ${sorted.length===0 ? `<div class="empty-state">Todavía no has registrado ninguna medición.</div>` : sorted.map((entry,i)=>{
+    const prev = sorted[i+1];
+    return `
+    <div class="card" style="padding:12px 14px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+        <p style="margin:0;font-weight:700;font-size:14px;">${formatFechaBonita(entry.fecha)}</p>
+        <button class="icon-btn" data-medida-delete="${entry.id}" style="color:var(--accent);">✕</button>
+      </div>
+      ${entry.peso!==""&&entry.peso!==undefined&&entry.peso!==null ? `
+      <p class="mono" style="font-size:15px;font-weight:700;color:var(--ink);margin:0 0 8px;">⚖️ ${entry.peso} kg${(()=>{
+        if(!prev || prev.peso===""||prev.peso===undefined||prev.peso===null) return "";
+        const diff = Math.round((entry.peso - prev.peso)*10)/10;
+        if(diff===0) return "";
+        const color = diff<0 ? "var(--olive)" : "var(--accent)";
+        return ` <span style="color:${color};font-weight:700;">(${diff>0?"+":""}${diff})</span>`;
+      })()}</p>` : ""}
+      <div class="grid2" style="gap:6px;">
+        ${MEDIDAS_CAMPOS.map(([k,label])=>{
+          const val = entry[k];
+          if(val===""||val===undefined||val===null) return `<div class="mono" style="font-size:12px;color:var(--muted);">${label}: —</div>`;
+          let delta = "";
+          if(prev && prev[k]!==""&&prev[k]!==undefined&&prev[k]!==null){
+            const diff = Math.round((val - prev[k])*10)/10;
+            if(diff!==0){
+              const color = diff<0 ? "var(--olive)" : "var(--accent)";
+              delta = ` <span style="color:${color};">(${diff>0?"+":""}${diff})</span>`;
+            }
+          }
+          return `<div class="mono" style="font-size:12px;color:var(--muted2);">${label}: <b>${val}</b> cm${delta}</div>`;
+        }).join("")}
+      </div>
+    </div>`;
+  }).join("")}
   `;
 }
 function formatFechaBonita(fecha){
@@ -1100,6 +1160,35 @@ function bindEvents(){
       await deletePhotoBlob(id+":plato");
       await deletePhotoBlob(id+":comido");
       diarioComidas = diarioComidas.filter(e=>e.id!==id);
+      persistAll(); render();
+    };
+  });
+
+  // Medidas corporales
+  const medFecha = document.getElementById("med-fecha");
+  if(medFecha){
+    medFecha.onchange = ()=>{ medidaDraft.fecha = medFecha.value; };
+    const medPeso = document.getElementById("med-peso");
+    if(medPeso) medPeso.oninput = e=>{ medidaDraft.peso = e.target.value; };
+    MEDIDAS_CAMPOS.forEach(([k])=>{
+      const inp = document.getElementById("med-"+k);
+      if(inp) inp.oninput = e=>{ medidaDraft[k] = e.target.value; };
+    });
+    document.getElementById("med-guardar").onclick = ()=>{
+      const hasAny = medidaDraft.peso !== "" || MEDIDAS_CAMPOS.some(([k])=> medidaDraft[k] !== "");
+      if(!hasAny){ alert("Rellena al menos una medida o el peso."); return; }
+      const entry = { id:"med"+Date.now(), fecha: medidaDraft.fecha, peso: medidaDraft.peso===""? "" : num(medidaDraft.peso) };
+      MEDIDAS_CAMPOS.forEach(([k])=>{ entry[k] = medidaDraft[k]===""? "" : num(medidaDraft[k]); });
+      medidasLog.push(entry);
+      persistAll();
+      medidaDraft = { fecha: new Date().toISOString().slice(0,10), peso:"", brazo:"", pecho:"", cintura:"", cadera:"", pierna:"" };
+      render();
+    };
+  }
+  document.querySelectorAll("[data-medida-delete]").forEach(b=>{
+    b.onclick = ()=>{
+      if(!confirm("¿Eliminar esta medición?")) return;
+      medidasLog = medidasLog.filter(e=>e.id!==b.dataset.medidaDelete);
       persistAll(); render();
     };
   });
@@ -1355,6 +1444,7 @@ document.getElementById("backup-import-file").onchange = (e)=>{
       checked = loadLS("nutriapp_marcados", {});
       mounjaroLog = loadLS("nutriapp_mounjaro", []);
       diarioComidas = loadLS("nutriapp_diario", []);
+      medidasLog = loadLS("nutriapp_medidas", []);
       status.style.color = "var(--olive)";
       status.textContent = "✓ Copia restaurada correctamente.";
       render();
